@@ -1,5 +1,5 @@
 # DoubleDoubleAdvancedIntegrate
- Double-Double Numerical Advanced Integration Implements 
+ Double-Double Advanced Numerical Integration Implements 
 
 ## Requirement
 .NET 8.0  
