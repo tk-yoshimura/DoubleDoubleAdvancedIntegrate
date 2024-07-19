@@ -3,9 +3,9 @@
 
 ## Requirement
 .NET 8.0  
-[DoubleDouble](https://github.com/tk-yoshimura/DoubleDouble)
-[DoubleDoubleComplex](https://github.com/tk-yoshimura/DoubleDoubleComplex)
-[DoubleDoubleIntegrate](https://github.com/tk-yoshimura/DoubleDoubleIntegrate)
+[DoubleDouble](https://github.com/tk-yoshimura/DoubleDouble)  
+[DoubleDoubleComplex](https://github.com/tk-yoshimura/DoubleDoubleComplex)  
+[DoubleDoubleIntegrate](https://github.com/tk-yoshimura/DoubleDoubleIntegrate)  
 
 ## Install
 
