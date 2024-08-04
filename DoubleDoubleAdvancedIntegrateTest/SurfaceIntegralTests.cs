@@ -1,5 +1,5 @@
-﻿using DoubleDoubleAdvancedIntegrate;
-using DoubleDouble;
+﻿using DoubleDouble;
+using DoubleDoubleAdvancedIntegrate;
 
 namespace DoubleDoubleAdvancedIntegrateTest {
     [TestClass()]
@@ -70,7 +70,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 (x, y, z) => 1,
                 (theta, r) => new SurfaceIntegral.Surface(ddouble.Cos(theta) * r, ddouble.Sin(theta) * r, 0),
                 (theta, r) => new SurfaceIntegral.Partials(
-                    (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r, 0), 
+                    (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r, 0),
                     (ddouble.Cos(theta), ddouble.Sin(theta), 0)
                 ),
                 (0, ddouble.PI * 2), (0, 1)
@@ -88,7 +88,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 (x, y, z) => y,
                 (theta, r) => new SurfaceIntegral.Surface(ddouble.Cos(theta) * r, ddouble.Sin(theta) * r, 0),
                 (theta, r) => new SurfaceIntegral.Partials(
-                    (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r, 0), 
+                    (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r, 0),
                     (ddouble.Cos(theta), ddouble.Sin(theta), 0)
                 ),
                 (0, ddouble.PI / 2), (0, 1)
@@ -106,7 +106,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 (x, y, z) => x * x + y * y,
                 (theta, r) => new SurfaceIntegral.Surface(ddouble.Cos(theta) * r, ddouble.Sin(theta) * r, 0),
                 (theta, r) => new SurfaceIntegral.Partials(
-                    (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r, 0), 
+                    (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r, 0),
                     (ddouble.Cos(theta), ddouble.Sin(theta), 0)
                 ),
                 (0, ddouble.PI * 2), (1, 2)

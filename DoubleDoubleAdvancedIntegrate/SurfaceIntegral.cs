@@ -16,7 +16,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Func<ddouble, ddouble, Surface> s,
             Func<ddouble, ddouble, Partials> d,
-            (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range, 
+            (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             GaussKronrodOrder order = GaussKronrodOrder.G31K63) {
 
             ReadOnlyCollection<(ddouble x, ddouble wg, ddouble wk)> ps = GaussKronrodPoints.Table[order];
@@ -33,7 +33,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
             for (int i = 0; i < ps.Count; i++) {
                 ddouble u = ps[i].x * ru + u_range.min;
-                
+
                 for (int j = 0; j < ps.Count; j++) {
                     ddouble v = ps[j].x * rv + v_range.min;
 
@@ -42,8 +42,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     ddouble value = f(surface.x, surface.y, surface.z);
 
                     ddouble dsduv = ddouble.Hypot(
-                        partial.dydu * partial.dzdv - partial.dzdu * partial.dydv, 
-                        partial.dzdu * partial.dxdv - partial.dxdu * partial.dzdv, 
+                        partial.dydu * partial.dzdv - partial.dzdu * partial.dydv,
+                        partial.dzdu * partial.dxdv - partial.dxdu * partial.dzdv,
                         partial.dxdu * partial.dydv - partial.dydu * partial.dxdv
                     );
 
