@@ -8,10 +8,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test1() {
             (ddouble value, ddouble error, _) = LineIntegral2D.AdaptiveIntegrate(
                 (x, y) => x * x + y * y,
-                new Curve2D(
-                    t => (ddouble.Cos(t), ddouble.Sin(t)),
-                    t => (-ddouble.Sin(t), ddouble.Cos(t))
-                ),
+                Curve2D.Circle(),
                 0, ddouble.PI * 2, 1e-28, maxdepth: 16
             );
 

@@ -15,6 +15,15 @@ namespace DoubleDoubleAdvancedIntegrate {
             Diff = t => (dxdt(t), dydt(t));
         }
 
+        public static Curve2D Line((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1) {
+            ddouble dx = v1.x - v0.x, dy = v1.y - v0.y;
+
+            return new(
+                t => (v0.x + t * dx, v0.y + t * dy),
+                t => (dx, dy)
+            );
+        }
+
         public static Curve2D Circle() => new(
             t => (ddouble.Cos(t), ddouble.Sin(t)),
             t => (-ddouble.Sin(t), ddouble.Cos(t))

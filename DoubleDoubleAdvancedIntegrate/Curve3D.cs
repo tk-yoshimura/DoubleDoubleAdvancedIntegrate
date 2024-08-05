@@ -17,5 +17,14 @@ namespace DoubleDoubleAdvancedIntegrate {
             Value = t => (x(t), y(t), z(t));
             Diff = t => (dxdt(t), dydt(t), dzdt(t));
         }
+
+        public static Curve3D Line((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1) {
+            ddouble dx = v1.x - v0.x, dy = v1.y - v0.y, dz = v1.z - v0.z;
+
+            return new(
+                t => (v0.x + t * dx, v0.y + t * dy, v0.z + t * dz),
+                t => (dx, dy, dz)
+            );
+        }
     }
 }
