@@ -4,18 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace DoubleDoubleAdvancedIntegrate {
     public static class SurfaceIntegral {
-        public class Surface(ddouble x, ddouble y, ddouble z) {
-            public ddouble x = x, y = y, z = z;
-        }
-
-        public class Partials((ddouble dxdu, ddouble dydu, ddouble dzdu) du, (ddouble dxdv, ddouble dydv, ddouble dzdv) dv) {
-            public ddouble dxdu = du.dxdu, dydu = du.dydu, dzdu = du.dzdu, dxdv = dv.dxdv, dydv = dv.dydv, dzdv = dv.dzdv;
-        }
-
         public static (ddouble value, ddouble error) Integrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Func<ddouble, ddouble, Surface> s,
-            Func<ddouble, ddouble, Partials> d,
+            Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             GaussKronrodOrder order = GaussKronrodOrder.G31K63) {
 
@@ -37,14 +28,14 @@ namespace DoubleDoubleAdvancedIntegrate {
                 for (int j = 0; j < ps.Count; j++) {
                     ddouble v = ps[j].x * rv + v_range.min;
 
-                    Surface surface = s(u, v);
-                    Partials partial = d(u, v);
-                    ddouble value = f(surface.x, surface.y, surface.z);
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
+                    ddouble value = f(x, y, z);
 
                     ddouble dsduv = ddouble.Hypot(
-                        partial.dydu * partial.dzdv - partial.dzdu * partial.dydv,
-                        partial.dzdu * partial.dxdv - partial.dxdu * partial.dzdv,
-                        partial.dxdu * partial.dydv - partial.dydu * partial.dxdv
+                        dydu * dzdv - dzdu * dydv,
+                        dzdu * dxdv - dxdu * dzdv,
+                        dxdu * dydv - dydu * dxdv
                     );
 
                     ddouble g = value * dsduv;
