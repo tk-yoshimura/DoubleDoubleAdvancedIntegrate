@@ -21,5 +21,18 @@ namespace DoubleDoubleAdvancedIntegrate {
             Value = (u, v) => (x(u, v), y(u, v));
             Diff = (u, v) => ((dxdu(u, v), dydu(u, v)), (dxdv(u, v), dydv(u, v)));
         }
+
+        public static Surface2D Ortho => new(
+            (u, v) => (u, v),
+            (u, v) => ((1d, 0d), (0d, 1d))
+        );
+
+        public static Surface2D Polar => new(
+            (r, theta) => (ddouble.Cos(theta) * r, ddouble.Sin(theta) * r),
+            (r, theta) => (
+                (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r),
+                (ddouble.Cos(theta), ddouble.Sin(theta))
+            )
+        );
     }
 }

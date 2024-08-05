@@ -25,10 +25,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test2() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x * y * y * y,
-                new Surface2D(
-                    (u, v) => (u, v),
-                    (u, v) => ((1, 0), (0, 1))
-                ),
+                Surface2D.Ortho,
                 (0, 1), (0, 1)
             );
 
@@ -42,10 +39,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test3() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => ddouble.Square(x - y),
-                new Surface2D(
-                    (u, v) => (u, v),
-                    (u, v) => ((1, 0), (0, 1))
-                ),
+                Surface2D.Ortho,
                 (0, 2), (0, 1)
             );
 
@@ -76,14 +70,8 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test5() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 1,
-                new Surface2D(
-                    (theta, r) => (ddouble.Cos(theta) * r, ddouble.Sin(theta) * r),
-                    (theta, r) => (
-                        (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r),
-                        (ddouble.Cos(theta), ddouble.Sin(theta))
-                    )
-                ),
-                (0, ddouble.PI * 2), (0, 1)
+                Surface2D.Polar,
+                (0, 1), (0, ddouble.PI * 2)
             );
 
             Console.WriteLine(value);
@@ -96,14 +84,8 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test6() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => y,
-                new Surface2D(
-                    (theta, r) => (ddouble.Cos(theta) * r, ddouble.Sin(theta) * r),
-                    (theta, r) => (
-                        (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r),
-                        (ddouble.Cos(theta), ddouble.Sin(theta))
-                    )
-                ),
-                (0, ddouble.PI / 2), (0, 1)
+                Surface2D.Polar,
+                (0, 1), (0, ddouble.PI / 2)
             );
 
             Console.WriteLine(value);
@@ -116,14 +98,8 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test7() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x + y * y,
-                new Surface2D(
-                    (theta, r) => (ddouble.Cos(theta) * r, ddouble.Sin(theta) * r),
-                    (theta, r) => (
-                        (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r),
-                        (ddouble.Cos(theta), ddouble.Sin(theta))
-                    )
-                ),
-                (0, ddouble.PI * 2), (1, 2)
+                Surface2D.Polar,
+                (1, 2), (0, ddouble.PI * 2)
             );
 
             Console.WriteLine(value);
