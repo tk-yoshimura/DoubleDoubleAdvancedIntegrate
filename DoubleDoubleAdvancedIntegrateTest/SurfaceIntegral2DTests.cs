@@ -36,10 +36,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test3() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 2 * x + y,
-                new Surface2D(
-                    (u, v) => (u, v * (1 - u)),
-                    (u, v) => ((1, -v), (0, 1 - u))
-                ),
+                Surface2D.Triangular((0, 0), (1, 0), (0, 1)),
                 (0, 1), (0, 1)
             );
 
@@ -53,7 +50,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test4() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 1,
-                Surface2D.Polar,
+                Surface2D.Polar(),
                 (0, 1), (0, ddouble.PI * 2)
             );
 
@@ -67,7 +64,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test5() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => y,
-                Surface2D.Polar,
+                Surface2D.Polar(),
                 (0, 1), (0, ddouble.PI / 2)
             );
 
@@ -81,7 +78,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test6() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x + y * y,
-                Surface2D.Polar,
+                Surface2D.Polar(),
                 (1, 2), (0, ddouble.PI * 2)
             );
 
@@ -89,6 +86,20 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             Console.WriteLine($"{error:e4}");
 
             Assert.IsTrue(ddouble.Abs(value - 15 * ddouble.PI / 2) < 1e-14);
+        }
+
+        [TestMethod()]
+        public void Test7() {
+            (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
+                (x, y) => x + y,
+                Surface2D.Triangular((0, -1), (1, 0), (0, 1)),
+                (0, 1), (0, 1)
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 1d / 3) < 1e-14);
         }
     }
 }

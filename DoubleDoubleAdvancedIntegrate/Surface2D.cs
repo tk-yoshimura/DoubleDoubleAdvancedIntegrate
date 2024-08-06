@@ -27,12 +27,36 @@ namespace DoubleDoubleAdvancedIntegrate {
             (u, v) => ((1d, 0d), (0d, 1d))
         );
 
-        public static Surface2D Polar => new(
-            (r, theta) => (ddouble.Cos(theta) * r, ddouble.Sin(theta) * r),
+        public static Surface2D Polar() => new(
+            (r, theta) => (r * ddouble.Cos(theta), r * ddouble.Sin(theta)),
             (r, theta) => (
-                (-ddouble.Sin(theta) * r, ddouble.Cos(theta) * r),
-                (ddouble.Cos(theta), ddouble.Sin(theta))
+                (ddouble.Cos(theta), ddouble.Sin(theta)),
+                (-r * ddouble.Sin(theta), r * ddouble.Cos(theta))
             )
         );
+
+        public static Surface2D Polar((ddouble x, ddouble y) center) => new(
+            (r, theta) => (center.x + ddouble.Cos(theta) * r, center.y + ddouble.Sin(theta) * r),
+            (r, theta) => (
+                (ddouble.Cos(theta), ddouble.Sin(theta)),
+                (-r * ddouble.Sin(theta), r * ddouble.Cos(theta))
+            )
+        );
+
+        public static Surface2D Triangular((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
+            ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y; 
+            ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y;
+
+            return new(
+                (u, v) => (
+                    v0.x + u * dx01 + (1d - u) * v * dx02, 
+                    v0.y + u * dy01 + (1d - u) * v * dy02
+                ),
+                (u, v) => (
+                    (dx01 + -v * dx02, dy01 + -v * dy02),
+                    ((1d - u) * dx02, (1d - u) * dy02)
+                )
+            );
+        }
     }
 }
