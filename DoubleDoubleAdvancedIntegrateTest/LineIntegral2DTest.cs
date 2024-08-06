@@ -6,7 +6,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
     public class LineIntegral2DTest {
         [TestMethod]
         public void Test1() {
-            (ddouble value, ddouble error, _) = LineIntegral2D.AdaptiveIntegrate(
+            (ddouble value, ddouble error, _) = LineIntegral.AdaptiveIntegrate(
                 (x, y) => x * x + y * y,
                 Curve2D.Circle(),
                 0, ddouble.PI * 2, 1e-28, maxdepth: 16
@@ -18,7 +18,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
 
         [TestMethod]
         public void Test2() {
-            (ddouble value, ddouble error, _) = LineIntegral2D.AdaptiveIntegrate(
+            (ddouble value, ddouble error, _) = LineIntegral.AdaptiveIntegrate(
                 (x, y) => x + y,
                 new Curve2D(
                     t => (t, t * t),

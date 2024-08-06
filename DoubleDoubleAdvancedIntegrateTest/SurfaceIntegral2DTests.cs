@@ -3,26 +3,9 @@ using DoubleDoubleAdvancedIntegrate;
 
 namespace DoubleDoubleAdvancedIntegrateTest {
     [TestClass()]
-    public class SurfaceIntegralTests {
+    public class SurfaceIntegral2DTests {
         [TestMethod()]
         public void Test1() {
-            (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
-                (x, y, z) => x + y + z,
-                new Surface3D(
-                    (u, v) => (u, v, u * u + v * v),
-                    (u, v) => ((1, 0, 2 * u), (0, 1, 2 * v))
-                ),
-                (0, 1), (0, 1)
-            );
-
-            Console.WriteLine(value);
-            Console.WriteLine($"{error:e4}");
-
-            Assert.IsTrue(ddouble.Abs(value - 3.4684) < 1e-3);
-        }
-
-        [TestMethod()]
-        public void Test2() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x * y * y * y,
                 Surface2D.Ortho,
@@ -36,7 +19,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         }
 
         [TestMethod()]
-        public void Test3() {
+        public void Test2() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => ddouble.Square(x - y),
                 Surface2D.Ortho,
@@ -50,7 +33,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         }
 
         [TestMethod()]
-        public void Test4() {
+        public void Test3() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 2 * x + y,
                 new Surface2D(
@@ -67,7 +50,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         }
 
         [TestMethod()]
-        public void Test5() {
+        public void Test4() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 1,
                 Surface2D.Polar,
@@ -81,7 +64,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         }
 
         [TestMethod()]
-        public void Test6() {
+        public void Test5() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => y,
                 Surface2D.Polar,
@@ -95,7 +78,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         }
 
         [TestMethod()]
-        public void Test7() {
+        public void Test6() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x + y * y,
                 Surface2D.Polar,

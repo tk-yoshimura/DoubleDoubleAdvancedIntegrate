@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace DoubleDoubleAdvancedIntegrate {
-    public static class LineIntegral4D {
+    public static partial class LineIntegral {
         public static (ddouble value, ddouble error) Integrate(
             Func<ddouble, ddouble, ddouble, ddouble, ddouble> f,
             Curve4D curve,
