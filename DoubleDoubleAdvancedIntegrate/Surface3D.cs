@@ -24,12 +24,12 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         public static Surface3D Triangular((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1, (ddouble x, ddouble y, ddouble z) v2) {
-            ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y, dz01 = v1.z - v0.z; 
+            ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y, dz01 = v1.z - v0.z;
             ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y, dz02 = v2.z - v0.z;
 
             return new(
                 (u, v) => (
-                    v0.x + u * dx01 + (1d - u) * v * dx02, 
+                    v0.x + u * dx01 + (1d - u) * v * dx02,
                     v0.y + u * dy01 + (1d - u) * v * dy02,
                     v0.z + u * dz01 + (1d - u) * v * dz02
                 ),
@@ -44,16 +44,16 @@ namespace DoubleDoubleAdvancedIntegrate {
             ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
 
             return new(
-                (r, theta) => { 
+                (r, theta) => {
                     ddouble c = r * ddouble.Cos(theta), s = r * ddouble.Sin(theta);
 
                     return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
                 },
-                (r, theta) => { 
+                (r, theta) => {
                     ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
 
                     return (
-                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s), 
+                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s),
                         (r * (-a.x * s + b.x * c), r * (-a.y * s + b.y * c), r * (-a.z * s + b.z * c))
                     );
                 }
@@ -64,16 +64,16 @@ namespace DoubleDoubleAdvancedIntegrate {
             ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
 
             return new(
-                (r, theta) => { 
+                (r, theta) => {
                     ddouble c = r * ddouble.Cos(theta), s = r * ddouble.Sin(theta);
 
                     return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
                 },
-                (r, theta) => { 
+                (r, theta) => {
                     ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
 
                     return (
-                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s), 
+                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s),
                         (r * (-a.x * s + b.x * c), r * (-a.y * s + b.y * c), r * (-a.z * s + b.z * c))
                     );
                 }

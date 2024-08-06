@@ -44,7 +44,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 (x, y, z) => x + y + z,
                 new Surface3D(
                     (u, v) => (u * ddouble.Cos(v), u * ddouble.Sin(v), u * u),
-                    (u, v) => ((ddouble.Cos(v), ddouble.Sin(v), 2 * u), (- u * ddouble.Sin(v), u * ddouble.Cos(v), 0))
+                    (u, v) => ((ddouble.Cos(v), ddouble.Sin(v), 2 * u), (-u * ddouble.Sin(v), u * ddouble.Cos(v), 0))
                 ),
                 (0, 1), (0, ddouble.PI * 2)
             );

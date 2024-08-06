@@ -32,12 +32,12 @@ namespace DoubleDoubleAdvancedIntegrate {
             ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
 
             return new(
-                t => { 
+                t => {
                     ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
 
                     return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
                 },
-                t => { 
+                t => {
                     ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
 
                     return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
@@ -49,12 +49,12 @@ namespace DoubleDoubleAdvancedIntegrate {
             ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
 
             return new(
-                t => { 
+                t => {
                     ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
 
                     return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
                 },
-                t => { 
+                t => {
                     ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
 
                     return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
@@ -66,12 +66,12 @@ namespace DoubleDoubleAdvancedIntegrate {
             ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
 
             return new(
-                t => { 
+                t => {
                     ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
 
                     return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
                 },
-                t => { 
+                t => {
                     ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
 
                     return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
@@ -83,12 +83,12 @@ namespace DoubleDoubleAdvancedIntegrate {
             ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
 
             return new(
-                t => { 
+                t => {
                     ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
 
                     return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
                 },
-                t => { 
+                t => {
                     ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
 
                     return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
