@@ -1,4 +1,5 @@
 ﻿using DoubleDouble;
+using DoubleDoubleAdvancedIntegrate.Utils;
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Surface3D {
@@ -36,6 +37,46 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (dx01 - v * dx02, dy01 - v * dy02, dz01 - v * dz02),
                     ((1d - u) * dx02, (1d - u) * dy02, (1d - u) * dz02)
                 )
+            );
+        }
+
+        public static Surface3D Circle((ddouble x, ddouble y, ddouble z) normal) {
+            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
+
+            return new(
+                (r, theta) => { 
+                    ddouble c = r * ddouble.Cos(theta), s = r * ddouble.Sin(theta);
+
+                    return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
+                },
+                (r, theta) => { 
+                    ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+
+                    return (
+                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s), 
+                        (r * (-a.x * s + b.x * c), r * (-a.y * s + b.y * c), r * (-a.z * s + b.z * c))
+                    );
+                }
+            );
+        }
+
+        public static Surface3D Circle((ddouble x, ddouble y, ddouble z) center, (ddouble x, ddouble y, ddouble z) normal) {
+            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
+
+            return new(
+                (r, theta) => { 
+                    ddouble c = r * ddouble.Cos(theta), s = r * ddouble.Sin(theta);
+
+                    return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
+                },
+                (r, theta) => { 
+                    ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+
+                    return (
+                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s), 
+                        (r * (-a.x * s + b.x * c), r * (-a.y * s + b.y * c), r * (-a.z * s + b.z * c))
+                    );
+                }
             );
         }
     }

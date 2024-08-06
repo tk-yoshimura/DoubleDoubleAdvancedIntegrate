@@ -27,7 +27,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             (u, v) => ((1d, 0d), (0d, 1d))
         );
 
-        public static Surface2D Polar() => new(
+        public static Surface2D Circle() => new(
             (r, theta) => (r * ddouble.Cos(theta), r * ddouble.Sin(theta)),
             (r, theta) => (
                 (ddouble.Cos(theta), ddouble.Sin(theta)),
@@ -35,7 +35,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             )
         );
 
-        public static Surface2D Polar((ddouble x, ddouble y) center) => new(
+        public static Surface2D Circle((ddouble x, ddouble y) center) => new(
             (r, theta) => (center.x + ddouble.Cos(theta) * r, center.y + ddouble.Sin(theta) * r),
             (r, theta) => (
                 (ddouble.Cos(theta), ddouble.Sin(theta)),
