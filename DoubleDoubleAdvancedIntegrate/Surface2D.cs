@@ -53,7 +53,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     v0.y + u * dy01 + (1d - u) * v * dy02
                 ),
                 (u, v) => (
-                    (dx01 + -v * dx02, dy01 + -v * dy02),
+                    (dx01 - v * dx02, dy01 - v * dy02),
                     ((1d - u) * dx02, (1d - u) * dy02)
                 )
             );
