@@ -36,7 +36,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                         ddouble w = ps[k].x * rw + w_range.min;
 
                         (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
-                        ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                        ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                          (ddouble dxdv, ddouble dydv, ddouble dzdv),
                          (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
                         ddouble value = f(x, y, z);
@@ -67,7 +67,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
             return (sk, error);
         }
-                
+
         private static (ddouble value, ddouble error, long eval_points) UnlimitedIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Volume3D volume,

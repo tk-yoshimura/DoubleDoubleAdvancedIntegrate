@@ -34,11 +34,11 @@ namespace DoubleDoubleAdvancedIntegrate {
         );
 
         public static Volume3D Tetrahedron(
-            (ddouble x, ddouble y, ddouble z) v0, 
-            (ddouble x, ddouble y, ddouble z) v1, 
-            (ddouble x, ddouble y, ddouble z) v2, 
+            (ddouble x, ddouble y, ddouble z) v0,
+            (ddouble x, ddouble y, ddouble z) v1,
+            (ddouble x, ddouble y, ddouble z) v2,
             (ddouble x, ddouble y, ddouble z) v3) {
-            
+
             ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y, dz01 = v1.z - v0.z;
             ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y, dz02 = v2.z - v0.z;
             ddouble dx03 = v3.x - v0.x, dy03 = v3.y - v0.y, dz03 = v3.z - v0.z;
