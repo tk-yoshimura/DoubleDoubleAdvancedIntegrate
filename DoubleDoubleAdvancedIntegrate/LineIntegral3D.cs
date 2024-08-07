@@ -206,6 +206,11 @@ namespace DoubleDoubleAdvancedIntegrate {
                 throw new ArgumentOutOfRangeException($"{nameof(a)}, {nameof(b)}", "Invalid param. interval must be finite");
             }
 
+            if (ddouble.IsZero(eps)) {
+                eps = ddouble.Ldexp(ddouble.Abs(Integrate(f, curve, a, b, order).value), -98);
+                eps = ddouble.Max(eps, 2.2e-308);
+            }
+
             if (maxdepth >= 0 && discontinue_eval_points >= 0) {
                 return LimitedDepthAndEvalIntegrate(f, curve, a, b, eps, order, maxdepth, discontinue_eval_points);
             }
