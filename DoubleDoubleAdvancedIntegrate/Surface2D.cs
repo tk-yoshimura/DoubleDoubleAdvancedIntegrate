@@ -43,7 +43,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             )
         );
 
-        public static Surface2D Triangular((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
+        public static Surface2D Triangle((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
             ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y;
             ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y;
 

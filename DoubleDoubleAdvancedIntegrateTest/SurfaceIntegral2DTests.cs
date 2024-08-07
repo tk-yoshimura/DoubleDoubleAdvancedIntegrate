@@ -36,7 +36,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test3() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 2 * x + y,
-                Surface2D.Triangular((0, 0), (1, 0), (0, 1)),
+                Surface2D.Triangle((0, 0), (1, 0), (0, 1)),
                 (0, 1), (0, 1)
             );
 
@@ -92,7 +92,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test7() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x + y,
-                Surface2D.Triangular((0, -1), (1, 0), (0, 1)),
+                Surface2D.Triangle((0, -1), (1, 0), (0, 1)),
                 (0, 1), (0, 1)
             );
 
