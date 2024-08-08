@@ -97,5 +97,50 @@ namespace DoubleDoubleAdvancedIntegrateTest {
 
             Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI) < 1e-25);
         }
+
+        [TestMethod()]
+        public void Test7() {
+            (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
+                (x, y, z) => x * x + y + z * z * z,
+                Surface3D.Sphere,
+                (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                eps: 0, maxdepth: 2
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 4.188790204786391) < 1e-6);
+        }
+
+        [TestMethod()]
+        public void Test8() {
+            (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
+                (x, y, z) => x * x + y + z * z * z,
+                Surface3D.Sphere * 2,
+                (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                eps: 0, maxdepth: 2
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 67.02064327658226) < 1e-6);
+        }
+
+        [TestMethod()]
+        public void Test9() {
+            (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
+                (x, y, z) => x * x + y + z * z * z,
+                Surface3D.Sphere * 2 + (2, 3, 5),
+                (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                eps: 0, maxdepth: 2
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 7707.373976806958) < 1e-6);
+        }
     }
 }
