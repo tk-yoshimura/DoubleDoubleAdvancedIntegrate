@@ -1,11 +1,11 @@
 ﻿using DoubleDouble;
 
 namespace DoubleDoubleAdvancedIntegrate {
-    public class Curve4D {
+    public class Line4D {
         public Func<ddouble, (ddouble x, ddouble y, ddouble z, ddouble w)> Value { get; }
         public Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt)> Diff { get; }
 
-        public Curve4D(
+        public Line4D(
             Func<ddouble, (ddouble x, ddouble y, ddouble z, ddouble w)> value,
             Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt)> diff) {
 
@@ -13,7 +13,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             Diff = diff;
         }
 
-        public Curve4D(
+        public Line4D(
             Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> z, Func<ddouble, ddouble> w,
             Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt, Func<ddouble, ddouble> dwdt) {
 
@@ -21,7 +21,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             Diff = t => (dxdt(t), dydt(t), dzdt(t), dwdt(t));
         }
 
-        public static Curve4D Line((ddouble x, ddouble y, ddouble z, ddouble w) v0, (ddouble x, ddouble y, ddouble z, ddouble w) v1) {
+        public static Line4D Line((ddouble x, ddouble y, ddouble z, ddouble w) v0, (ddouble x, ddouble y, ddouble z, ddouble w) v1) {
             ddouble dx = v1.x - v0.x, dy = v1.y - v0.y, dz = v1.z - v0.z, dw = v1.w - v0.w;
 
             return new(

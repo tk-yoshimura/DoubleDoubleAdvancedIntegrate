@@ -7,7 +7,7 @@ namespace DoubleDoubleAdvancedIntegrate {
     public static partial class LineIntegral {
         public static (ddouble value, ddouble error) Integrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Curve3D curve,
+            Line3D line,
             ddouble a, ddouble b, GaussKronrodOrder order = GaussKronrodOrder.G31K63) {
 
             ReadOnlyCollection<(ddouble x, ddouble wg, ddouble wk)> ps = GaussKronrodPoints.Table[order];
@@ -22,8 +22,8 @@ namespace DoubleDoubleAdvancedIntegrate {
             for (int i = 0; i < ps.Count; i++) {
                 ddouble t = ps[i].x * r + a;
 
-                (ddouble x, ddouble y, ddouble z) = curve.Value(t);
-                (ddouble dx, ddouble dy, ddouble dz) = curve.Diff(t);
+                (ddouble x, ddouble y, ddouble z) = line.Value(t);
+                (ddouble dx, ddouble dy, ddouble dz) = line.Diff(t);
 
                 ddouble dsdt = ddouble.Hypot(dx, dy, dz);
 
@@ -46,7 +46,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         private static (ddouble value, ddouble error, long eval_points) UnlimitedIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Curve3D curve,
+            Line3D line,
             ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order) {
 
             Stack<(ddouble a, ddouble b, ddouble eps)> stack = new();
@@ -58,7 +58,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             while (stack.Count > 0) {
                 (a, b, eps) = stack.Pop();
 
-                (ddouble value, ddouble error) = Integrate(f, curve, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -79,7 +79,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         private static (ddouble value, ddouble error, long eval_points) LimitedDepthIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Curve3D curve,
+            Line3D line,
             ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order, int maxdepth) {
 
             Debug.Assert(maxdepth >= 0);
@@ -93,7 +93,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             while (stack.Count > 0) {
                 (a, b, eps, int depth) = stack.Pop();
 
-                (ddouble value, ddouble error) = Integrate(f, curve, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -115,7 +115,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         private static (ddouble value, ddouble error, long eval_points) LimitedEvalIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Curve3D curve,
+            Line3D line,
             ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order, long discontinue_eval_points) {
 
             Debug.Assert(discontinue_eval_points >= 0);
@@ -129,7 +129,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             while (queue.Count > 0) {
                 (a, b, eps) = queue.Dequeue();
 
-                (ddouble value, ddouble error) = Integrate(f, curve, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -151,7 +151,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         private static (ddouble value, ddouble error, long eval_points) LimitedDepthAndEvalIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Curve3D curve,
+            Line3D line,
             ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order, int maxdepth, long discontinue_eval_points) {
 
             Debug.Assert(maxdepth >= 0);
@@ -166,7 +166,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             while (queue.Count > 0) {
                 (a, b, eps, int depth) = queue.Dequeue();
 
-                (ddouble value, ddouble error) = Integrate(f, curve, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -189,7 +189,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         public static (ddouble value, ddouble error, long eval_points) AdaptiveIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
-            Curve3D curve,
+            Line3D line,
             ddouble a, ddouble b, ddouble eps,
             GaussKronrodOrder order = GaussKronrodOrder.G31K63, int maxdepth = -1, long discontinue_eval_points = -1) {
 
@@ -207,21 +207,21 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
 
             if (ddouble.IsZero(eps)) {
-                eps = ddouble.Ldexp(ddouble.Abs(Integrate(f, curve, a, b, order).value), -98);
+                eps = ddouble.Ldexp(ddouble.Abs(Integrate(f, line, a, b, order).value), -98);
                 eps = ddouble.Max(eps, 2.2e-308);
             }
 
             if (maxdepth >= 0 && discontinue_eval_points >= 0) {
-                return LimitedDepthAndEvalIntegrate(f, curve, a, b, eps, order, maxdepth, discontinue_eval_points);
+                return LimitedDepthAndEvalIntegrate(f, line, a, b, eps, order, maxdepth, discontinue_eval_points);
             }
             if (maxdepth >= 0) {
-                return LimitedDepthIntegrate(f, curve, a, b, eps, order, maxdepth);
+                return LimitedDepthIntegrate(f, line, a, b, eps, order, maxdepth);
             }
             if (discontinue_eval_points >= 0) {
-                return LimitedEvalIntegrate(f, curve, a, b, eps, order, discontinue_eval_points);
+                return LimitedEvalIntegrate(f, line, a, b, eps, order, discontinue_eval_points);
             }
 
-            return UnlimitedIntegrate(f, curve, a, b, eps, order);
+            return UnlimitedIntegrate(f, line, a, b, eps, order);
         }
     }
 }
