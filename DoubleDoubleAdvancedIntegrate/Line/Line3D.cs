@@ -1,5 +1,4 @@
 ﻿using DoubleDouble;
-using DoubleDoubleAdvancedIntegrate.Utils;
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Line3D {

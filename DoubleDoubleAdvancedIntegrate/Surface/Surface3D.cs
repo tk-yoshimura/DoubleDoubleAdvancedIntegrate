@@ -1,6 +1,4 @@
 ﻿using DoubleDouble;
-using DoubleDoubleAdvancedIntegrate.Utils;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Surface3D {
@@ -70,7 +68,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                 );
             }
         );
-        
+
         public static Surface3D operator +(Surface3D surface, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
                 (u, v) => {
@@ -90,7 +88,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * scale, y * scale, z * scale);
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
 
                     return (
@@ -109,7 +107,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * scale.x, y * scale.y, z * scale.z);
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
 
                     return (
@@ -141,7 +139,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     );
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
 
                     return (
@@ -179,7 +177,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     );
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
 
                     return (
@@ -187,7 +185,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                         dxdu * m00 + dydu * m01 + dzdu * m02,
                         dxdu * m10 + dydu * m11 + dzdu * m12,
                         dxdu * m20 + dydu * m21 + dzdu * m22
-                    ), 
+                    ),
                     (
                         dxdv * m00 + dydv * m01 + dzdv * m02,
                         dxdv * m10 + dydv * m11 + dzdv * m12,

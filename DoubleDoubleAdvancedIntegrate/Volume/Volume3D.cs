@@ -80,7 +80,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         );
 
-        
+
         public static Volume3D operator +(Volume3D volume, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
                 (u, v, w) => {
@@ -100,7 +100,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * scale, y * scale, z * scale);
                 },
                 (u, v, w) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv),
                      (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
 
@@ -121,7 +121,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * scale.x, y * scale.y, z * scale.z);
                 },
                 (u, v, w) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv),
                      (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
 
@@ -155,7 +155,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     );
                 },
                 (u, v, w) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv),
                      (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
 
@@ -199,7 +199,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     );
                 },
                 (u, v, w) => {
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
                      (ddouble dxdv, ddouble dydv, ddouble dzdv),
                      (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
 
@@ -208,12 +208,12 @@ namespace DoubleDoubleAdvancedIntegrate {
                         dxdu * m00 + dydu * m01 + dzdu * m02,
                         dxdu * m10 + dydu * m11 + dzdu * m12,
                         dxdu * m20 + dydu * m21 + dzdu * m22
-                    ), 
+                    ),
                     (
                         dxdv * m00 + dydv * m01 + dzdv * m02,
                         dxdv * m10 + dydv * m11 + dzdv * m12,
                         dxdv * m20 + dydv * m21 + dzdv * m22
-                    ), 
+                    ),
                     (
                         dxdw * m00 + dydw * m01 + dzdw * m02,
                         dxdw * m10 + dydw * m11 + dzdw * m12,

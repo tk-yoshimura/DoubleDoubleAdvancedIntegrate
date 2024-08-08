@@ -60,5 +60,20 @@ namespace DoubleDoubleAdvancedIntegrateTest {
 
             Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3) < 1e-25);
         }
+
+        [TestMethod()]
+        public void Test5() {
+            (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
+                (x, y, z) => 1,
+                Volume3D.Sphere + (1, 2, 3),
+                (0, 1), (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3) < 1e-25);
+        }
     }
 }

@@ -52,15 +52,15 @@ namespace DoubleDoubleAdvancedIntegrate {
                     );
                 },
                     t => {
-                    (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = line.Diff(t);
+                        (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = line.Diff(t);
 
-                    return (
-                        dxdt * m00 + dydt * m01 + dzdt * m02 + dwdt * m03,
-                        dxdt * m10 + dydt * m11 + dzdt * m12 + dwdt * m13,
-                        dxdt * m20 + dydt * m21 + dzdt * m22 + dwdt * m23,
-                        dxdt * m30 + dydt * m31 + dzdt * m32 + dwdt * m33
-                    );
-                }
+                        return (
+                            dxdt * m00 + dydt * m01 + dzdt * m02 + dwdt * m03,
+                            dxdt * m10 + dydt * m11 + dzdt * m12 + dwdt * m13,
+                            dxdt * m20 + dydt * m21 + dzdt * m22 + dwdt * m23,
+                            dxdt * m30 + dydt * m31 + dzdt * m32 + dwdt * m33
+                        );
+                    }
             );
         }
     }

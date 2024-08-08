@@ -70,11 +70,11 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * scale, y * scale);
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu), 
+                    ((ddouble dxdu, ddouble dydu),
                      (ddouble dxdv, ddouble dydv)) = surface.Diff(u, v);
 
                     return (
-                        (dxdu * scale, dydu * scale), 
+                        (dxdu * scale, dydu * scale),
                         (dxdv * scale, dydv * scale)
                     );
                 }
@@ -89,11 +89,11 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * scale.x, y * scale.y);
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu), 
+                    ((ddouble dxdu, ddouble dydu),
                      (ddouble dxdv, ddouble dydv)) = surface.Diff(u, v);
 
                     return (
-                        (dxdu * scale.x, dydu * scale.y), 
+                        (dxdu * scale.x, dydu * scale.y),
                         (dxdv * scale.x, dydv * scale.y)
                     );
                 }
@@ -110,7 +110,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * c - y * s, x * s + y * c);
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu), 
+                    ((ddouble dxdu, ddouble dydu),
                      (ddouble dxdv, ddouble dydv)) = surface.Diff(u, v);
 
                     return (
@@ -136,7 +136,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     return (x * m00 + y * m01 + m02, x * m10 + y * m11 + m12);
                 },
                 (u, v) => {
-                    ((ddouble dxdu, ddouble dydu), 
+                    ((ddouble dxdu, ddouble dydu),
                      (ddouble dxdv, ddouble dydv)) = surface.Diff(u, v);
 
                     return (
