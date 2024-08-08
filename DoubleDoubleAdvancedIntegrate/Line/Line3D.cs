@@ -3,8 +3,8 @@ using DoubleDoubleAdvancedIntegrate.Utils;
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Line3D {
-        public Func<ddouble, (ddouble x, ddouble y, ddouble z)> Value { get; }
-        public Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> Diff { get; }
+        public virtual Func<ddouble, (ddouble x, ddouble y, ddouble z)> Value { get; }
+        public virtual Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> Diff { get; }
 
         public Line3D(Func<ddouble, (ddouble x, ddouble y, ddouble z)> value, Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> diff) {
             Value = value;
@@ -28,70 +28,111 @@ namespace DoubleDoubleAdvancedIntegrate {
             );
         }
 
-        public static Line3D Circle((ddouble x, ddouble y, ddouble z) normal) {
-            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
+        public static Line3D Circle = new(
+            t => (ddouble.Cos(t), ddouble.Sin(t), 0d),
+            t => (-ddouble.Sin(t), ddouble.Cos(t), 0d)
+        );
 
+        public static Line3D operator +(Line3D line, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
                 t => {
-                    ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
 
-                    return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
+                    return (x + translate.x, y + translate.y, z + translate.z);
+                },
+                line.Diff
+            );
+        }
+
+        public static Line3D operator *(Line3D line, ddouble scale) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
+
+                    return (x * scale, y * scale, z * scale);
                 },
                 t => {
-                    ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
 
-                    return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
+                    return (dxdt * scale, dydt * scale, dzdt * scale);
                 }
             );
         }
 
-        public static Line3D Circle(ddouble radius, (ddouble x, ddouble y, ddouble z) normal) {
-            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
-
+        public static Line3D operator *(Line3D line, (ddouble x, ddouble y, ddouble z) scale) {
             return new(
                 t => {
-                    ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
 
-                    return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
+                    return (x * scale.x, y * scale.y, z * scale.z);
                 },
                 t => {
-                    ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
 
-                    return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
+                    return (dxdt * scale.x, dydt * scale.y, dzdt * scale.z);
                 }
             );
         }
 
-        public static Line3D Circle((ddouble x, ddouble y, ddouble z) center, (ddouble x, ddouble y, ddouble z) normal) {
-            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
+        public static Line3D Rotate(Line3D line, (ddouble x, ddouble y, ddouble z) axis, ddouble theta) {
+            ddouble r = ddouble.Hypot(axis.x, axis.y, axis.z);
+            (ddouble nx, ddouble ny, ddouble nz) = (axis.x / r, axis.y / r, axis.z / r);
+
+            ddouble c = ddouble.Cos(theta), cm1 = 1d - c, s = ddouble.Sin(theta);
+
+            ddouble m00 = nx * nx * cm1 + c, m01 = nx * ny * cm1 - nz * s, m02 = nx * nz * cm1 + ny * s;
+            ddouble m10 = nx * ny * cm1 + nz * s, m11 = ny * ny * cm1 + c, m12 = ny * nz * cm1 - nx * s;
+            ddouble m20 = nx * nz * cm1 - ny * s, m21 = nz * ny * cm1 + nx * s, m22 = nz * nz * cm1 + c;
 
             return new(
                 t => {
-                    ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
 
-                    return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
+                    return (
+                        x * m00 + y * m01 + z * m02,
+                        x * m10 + y * m11 + z * m12,
+                        x * m20 + y * m21 + z * m22
+                    );
                 },
                 t => {
-                    ddouble c = ddouble.Cos(t), s = ddouble.Sin(t);
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
 
-                    return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
+                    return (
+                        dxdt * m00 + dydt * m01 + dzdt * m02,
+                        dxdt * m10 + dydt * m11 + dzdt * m12,
+                        dxdt * m20 + dydt * m21 + dzdt * m22
+                    );
                 }
             );
         }
 
-        public static Line3D Circle((ddouble x, ddouble y, ddouble z) center, ddouble radius, (ddouble x, ddouble y, ddouble z) normal) {
-            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
+        public static Line3D operator *(Line3D line, ddouble[,] matrix) {
+            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 4) {
+                throw new ArgumentException("Invalid matrix size. expected: 3x4", nameof(matrix));
+            }
+
+            ddouble m00 = matrix[0, 0], m01 = matrix[0, 1], m02 = matrix[0, 2], m03 = matrix[0, 3];
+            ddouble m10 = matrix[1, 0], m11 = matrix[1, 1], m12 = matrix[1, 2], m13 = matrix[1, 3];
+            ddouble m20 = matrix[2, 0], m21 = matrix[2, 1], m22 = matrix[2, 2], m23 = matrix[2, 3];
 
             return new(
                 t => {
-                    ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
 
-                    return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
+                    return (
+                        x * m00 + y * m01 + z * m02 + m03,
+                        x * m10 + y * m11 + z * m12 + m13,
+                        x * m20 + y * m21 + z * m22 + m23
+                    );
                 },
                 t => {
-                    ddouble c = radius * ddouble.Cos(t), s = radius * ddouble.Sin(t);
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
 
-                    return (-a.x * s + b.x * c, -a.y * s + b.y * c, -a.z * s + b.z * c);
+                    return (
+                        dxdt * m00 + dydt * m01 + dzdt * m02,
+                        dxdt * m10 + dydt * m11 + dzdt * m12,
+                        dxdt * m20 + dydt * m21 + dzdt * m22
+                    );
                 }
             );
         }
