@@ -37,7 +37,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error) = VolumeIntegral.Integrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere,
-                (0, 1), (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2)
+                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2)
             );
 
             Console.WriteLine(value);
@@ -51,7 +51,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere,
-                (0, 1), (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
@@ -66,7 +66,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere + (1, 2, 3),
-                (0, 1), (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
@@ -81,7 +81,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere * (2, 3, 5),
-                (0, 1), (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
@@ -96,7 +96,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Rotate(Volume3D.Sphere, (1, 2, 3), 0.5),
-                (0, 1), (0, ddouble.PI * 2), (-ddouble.PI / 2, ddouble.PI / 2),
+                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
