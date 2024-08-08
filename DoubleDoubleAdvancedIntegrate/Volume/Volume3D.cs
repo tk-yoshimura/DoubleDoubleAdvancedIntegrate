@@ -57,6 +57,30 @@ namespace DoubleDoubleAdvancedIntegrate {
             );
         }
 
+        public static Volume3D Parallelepiped(
+            (ddouble x, ddouble y, ddouble z) v0,
+            (ddouble x, ddouble y, ddouble z) v1,
+            (ddouble x, ddouble y, ddouble z) v2,
+            (ddouble x, ddouble y, ddouble z) v3) {
+
+            ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y, dz01 = v1.z - v0.z;
+            ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y, dz02 = v2.z - v0.z;
+            ddouble dx03 = v3.x - v0.x, dy03 = v3.y - v0.y, dz03 = v3.z - v0.z;
+
+            return new(
+                (u, v, w) => (
+                    v0.x + u * dx01 + v * dx02 + w * dx03,
+                    v0.y + u * dy01 + v * dy02 + w * dy03,
+                    v0.z + u * dz01 + v * dz02 + w * dz03
+                ),
+                (u, v, w) => (
+                    (dx01, dy01, dz01),
+                    (dx02, dy02, dz02),
+                    (dx03, dy03, dz03)
+                )
+            );
+        }
+
         public static Volume3D Sphere => new(
             (r, theta, phi) => {
                 ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
@@ -80,6 +104,44 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         );
 
+        public static Volume3D Cylinder => new(
+            (r, theta, z) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+                
+                return new(
+                    r * cos_theta,
+                    r * sin_theta,
+                    z
+                );
+            },
+            (r, theta, z) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+
+                return new(
+                    (cos_theta, sin_theta, 0d),
+                    (-r * sin_theta, r * cos_theta, 0d),
+                    (0d, 0d, 1d)
+                );
+            }
+        );
+
+        public static Volume3D TrigonalPrism((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
+            ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y;
+            ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y;
+
+            return new(
+                (u, v, z) => (
+                    v0.x + u * dx01 + (1d - u) * v * dx02,
+                    v0.y + u * dy01 + (1d - u) * v * dy02,
+                    z
+                ),
+                (u, v, z) => (
+                    (dx01 - v * dx02, dy01 - v * dy02, 0d),
+                    ((1d - u) * dx02, (1d - u) * dy02, 0d),
+                    (0d, 0d, 1d)
+                )
+            );
+        }
 
         public static Volume3D operator +(Volume3D volume, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
@@ -177,6 +239,28 @@ namespace DoubleDoubleAdvancedIntegrate {
                     ));
                 }
             );
+        }
+
+        public static Volume3D Rotate(Volume3D volume, (ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1) {
+            ddouble rv0 = ddouble.Hypot(v0.x, v0.y, v0.z), rv1 = ddouble.Hypot(v1.x, v1.y, v1.z);
+            v0 = (v0.x / rv0, v0.y / rv0, v0.z / rv0);
+            v1 = (v1.x / rv1, v1.y / rv1, v1.z / rv1);
+
+            (ddouble x, ddouble y, ddouble z) axis = (
+                v0.y * v1.z - v0.z * v1.y,
+                v0.z * v1.x - v0.x * v1.z,
+                v0.x * v1.y - v0.y * v1.x
+            );
+
+            ddouble r = ddouble.Hypot(axis.x, axis.y, axis.z);
+
+            if (!(r > 0d)) {
+                return volume;
+            }
+
+            ddouble theta = ddouble.Acos(v0.x * v1.x + v0.y * v1.y + v0.z * v1.z);
+
+            return Rotate(volume, axis, theta);
         }
 
         public static Volume3D operator *(Volume3D volume, ddouble[,] matrix) {

@@ -105,6 +105,28 @@ namespace DoubleDoubleAdvancedIntegrate {
             );
         }
 
+        public static Line3D Rotate(Line3D line, (ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1) {
+            ddouble rv0 = ddouble.Hypot(v0.x, v0.y, v0.z), rv1 = ddouble.Hypot(v1.x, v1.y, v1.z);
+            v0 = (v0.x / rv0, v0.y / rv0, v0.z / rv0);
+            v1 = (v1.x / rv1, v1.y / rv1, v1.z / rv1);
+
+            (ddouble x, ddouble y, ddouble z) axis = (
+                v0.y * v1.z - v0.z * v1.y,
+                v0.z * v1.x - v0.x * v1.z,
+                v0.x * v1.y - v0.y * v1.x
+            );
+
+            ddouble r = ddouble.Hypot(axis.x, axis.y, axis.z);
+
+            if (!(r > 0d)) {
+                return line;
+            }
+
+            ddouble theta = ddouble.Acos(v0.x * v1.x + v0.y * v1.y + v0.z * v1.z);
+
+            return Rotate(line, axis, theta);
+        }
+
         public static Line3D operator *(Line3D line, ddouble[,] matrix) {
             if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 4) {
                 throw new ArgumentException("Invalid matrix size. expected: 3x4", nameof(matrix));

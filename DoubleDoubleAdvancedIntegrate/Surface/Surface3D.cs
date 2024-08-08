@@ -47,6 +47,23 @@ namespace DoubleDoubleAdvancedIntegrate {
             );
         }
 
+        public static Surface3D Rhombus((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1, (ddouble x, ddouble y, ddouble z) v2) {
+            ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y, dz01 = v1.z - v0.z;
+            ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y, dz02 = v2.z - v0.z;
+
+            return new(
+                (u, v) => (
+                    v0.x + u * dx01 + v * dx02,
+                    v0.y + u * dy01 + v * dy02,
+                    v0.z + u * dz01 + v * dz02
+                ),
+                (u, v) => (
+                    (dx01, dy01, dz01),
+                    (dx02, dy02, dz02)
+                )
+            );
+        }
+
         public static Surface3D Sphere => new(
             (theta, phi) => {
                 ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
@@ -155,6 +172,28 @@ namespace DoubleDoubleAdvancedIntegrate {
                     ));
                 }
             );
+        }
+
+        public static Surface3D Rotate(Surface3D surface, (ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1) {
+            ddouble rv0 = ddouble.Hypot(v0.x, v0.y, v0.z), rv1 = ddouble.Hypot(v1.x, v1.y, v1.z);
+            v0 = (v0.x / rv0, v0.y / rv0, v0.z / rv0);
+            v1 = (v1.x / rv1, v1.y / rv1, v1.z / rv1);
+
+            (ddouble x, ddouble y, ddouble z) axis = (
+                v0.y * v1.z - v0.z * v1.y,
+                v0.z * v1.x - v0.x * v1.z,
+                v0.x * v1.y - v0.y * v1.x
+            );
+
+            ddouble r = ddouble.Hypot(axis.x, axis.y, axis.z);
+
+            if (!(r > 0d)) {
+                return surface;
+            }
+
+            ddouble theta = ddouble.Acos(v0.x * v1.x + v0.y * v1.y + v0.z * v1.z);
+
+            return Rotate(surface, axis, theta);
         }
 
         public static Surface3D operator *(Surface3D surface, ddouble[,] matrix) {

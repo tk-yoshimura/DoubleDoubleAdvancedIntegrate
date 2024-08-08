@@ -177,7 +177,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test12() {
             (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
                 (x, y, z) => x * x + y + z * z * z,
-                Surface3D.Rotate(Surface3D.Sphere, (0, 1, 0), ddouble.PI / 2),
+                Surface3D.Rotate(Surface3D.Sphere, (0, 0, 1), (1, 0, 0)),
                 (0, ddouble.PI / 2), (0, ddouble.PI * 2),
                 eps: 0, maxdepth: 2
             );
