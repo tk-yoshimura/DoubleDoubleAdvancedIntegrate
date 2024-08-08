@@ -50,7 +50,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test4() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 1,
-                Surface2D.Circle(),
+                Surface2D.Circle,
                 (0, 1), (0, ddouble.PI * 2)
             );
 
@@ -64,7 +64,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test5() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => y,
-                Surface2D.Circle(),
+                Surface2D.Circle,
                 (0, 1), (0, ddouble.PI / 2)
             );
 
@@ -78,7 +78,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
         public void Test6() {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x + y * y,
-                Surface2D.Circle(),
+                Surface2D.Circle,
                 (1, 2), (0, ddouble.PI * 2)
             );
 

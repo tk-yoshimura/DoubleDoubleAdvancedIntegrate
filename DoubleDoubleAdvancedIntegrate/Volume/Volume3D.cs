@@ -57,7 +57,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             );
         }
 
-        public static Volume3D Sphere() => new(
+        public static Volume3D Sphere => new(
             (r, theta, phi) => {
                 ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
                 ddouble cos_phi = ddouble.Cos(phi), sin_phi = ddouble.Sin(phi);
@@ -79,5 +79,148 @@ namespace DoubleDoubleAdvancedIntegrate {
                 );
             }
         );
+
+        
+        public static Volume3D operator +(Volume3D volume, (ddouble x, ddouble y, ddouble z) translate) {
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (x + translate.x, y + translate.y, z + translate.z);
+                },
+                volume.Diff
+            );
+        }
+
+        public static Volume3D operator *(Volume3D volume, ddouble scale) {
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (x * scale, y * scale, z * scale);
+                },
+                (u, v, w) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv),
+                     (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
+
+                    return (
+                        (dxdu * scale, dydu * scale, dzdu * scale),
+                        (dxdv * scale, dydv * scale, dzdv * scale),
+                        (dxdw * scale, dydw * scale, dzdw * scale)
+                    );
+                }
+            );
+        }
+
+        public static Volume3D operator *(Volume3D volume, (ddouble x, ddouble y, ddouble z) scale) {
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (x * scale.x, y * scale.y, z * scale.z);
+                },
+                (u, v, w) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv),
+                     (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
+
+                    return (
+                        (dxdu * scale.x, dydu * scale.y, dzdu * scale.z),
+                        (dxdv * scale.x, dydv * scale.y, dzdv * scale.z),
+                        (dxdw * scale.x, dydw * scale.y, dzdw * scale.z)
+                    );
+                }
+            );
+        }
+
+        public static Volume3D Rotate(Volume3D volume, (ddouble x, ddouble y, ddouble z) axis, ddouble theta) {
+            ddouble r = ddouble.Hypot(axis.x, axis.y, axis.z);
+            (ddouble nx, ddouble ny, ddouble nz) = (axis.x / r, axis.y / r, axis.z / r);
+
+            ddouble c = ddouble.Cos(theta), cm1 = 1d - c, s = ddouble.Sin(theta);
+
+            ddouble m00 = nx * nx * cm1 + c, m01 = nx * ny * cm1 - nz * s, m02 = nx * nz * cm1 + ny * s;
+            ddouble m10 = nx * ny * cm1 + nz * s, m11 = ny * ny * cm1 + c, m12 = ny * nz * cm1 - nx * s;
+            ddouble m20 = nx * nz * cm1 - ny * s, m21 = nz * ny * cm1 + nx * s, m22 = nz * nz * cm1 + c;
+
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (
+                        x * m00 + y * m01 + z * m02,
+                        x * m10 + y * m11 + z * m12,
+                        x * m20 + y * m21 + z * m22
+                    );
+                },
+                (u, v, w) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv),
+                     (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
+
+                    return (
+                    (
+                        dxdu * m00 + dydu * m01 + dzdu * m02,
+                        dxdu * m10 + dydu * m11 + dzdu * m12,
+                        dxdu * m20 + dydu * m21 + dzdu * m22
+                    ),
+                    (
+                        dxdv * m00 + dydv * m01 + dzdv * m02,
+                        dxdv * m10 + dydv * m11 + dzdv * m12,
+                        dxdv * m20 + dydv * m21 + dzdv * m22
+                    ),
+                    (
+                        dxdw * m00 + dydw * m01 + dzdw * m02,
+                        dxdw * m10 + dydw * m11 + dzdw * m12,
+                        dxdw * m20 + dydw * m21 + dzdw * m22
+                    ));
+                }
+            );
+        }
+
+        public static Volume3D operator *(Volume3D volume, ddouble[,] matrix) {
+            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 4) {
+                throw new ArgumentException("Invalid matrix size. expected: 3x4", nameof(matrix));
+            }
+
+            ddouble m00 = matrix[0, 0], m01 = matrix[0, 1], m02 = matrix[0, 2], m03 = matrix[0, 3];
+            ddouble m10 = matrix[1, 0], m11 = matrix[1, 1], m12 = matrix[1, 2], m13 = matrix[1, 3];
+            ddouble m20 = matrix[2, 0], m21 = matrix[2, 1], m22 = matrix[2, 2], m23 = matrix[2, 3];
+
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (
+                        x * m00 + y * m01 + z * m02 + m03,
+                        x * m10 + y * m11 + z * m12 + m13,
+                        x * m20 + y * m21 + z * m22 + m23
+                    );
+                },
+                (u, v, w) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv),
+                     (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
+
+                    return (
+                    (
+                        dxdu * m00 + dydu * m01 + dzdu * m02,
+                        dxdu * m10 + dydu * m11 + dzdu * m12,
+                        dxdu * m20 + dydu * m21 + dzdu * m22
+                    ), 
+                    (
+                        dxdv * m00 + dydv * m01 + dzdv * m02,
+                        dxdv * m10 + dydv * m11 + dzdv * m12,
+                        dxdv * m20 + dydv * m21 + dzdv * m22
+                    ), 
+                    (
+                        dxdw * m00 + dydw * m01 + dzdw * m02,
+                        dxdw * m10 + dydw * m11 + dzdw * m12,
+                        dxdw * m20 + dydw * m21 + dzdw * m22
+                    ));
+                }
+            );
+        }
     }
 }

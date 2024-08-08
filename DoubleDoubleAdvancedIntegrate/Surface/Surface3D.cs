@@ -1,5 +1,6 @@
 ﻿using DoubleDouble;
 using DoubleDoubleAdvancedIntegrate.Utils;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Surface3D {
@@ -23,6 +24,14 @@ namespace DoubleDoubleAdvancedIntegrate {
             Diff = (u, v) => ((dxdu(u, v), dydu(u, v), dzdu(u, v)), (dxdv(u, v), dydv(u, v), dzdv(u, v)));
         }
 
+        public static Surface3D Circle => new(
+            (r, theta) => (r * ddouble.Cos(theta), r * ddouble.Sin(theta), 0d),
+            (r, theta) => (
+                (ddouble.Cos(theta), ddouble.Sin(theta), 0d),
+                (-r * ddouble.Sin(theta), r * ddouble.Cos(theta), 0d)
+            )
+        );
+
         public static Surface3D Triangle((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1, (ddouble x, ddouble y, ddouble z) v2) {
             ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y, dz01 = v1.z - v0.z;
             ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y, dz02 = v2.z - v0.z;
@@ -40,42 +49,150 @@ namespace DoubleDoubleAdvancedIntegrate {
             );
         }
 
-        public static Surface3D Circle((ddouble x, ddouble y, ddouble z) normal) {
-            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
+        public static Surface3D Sphere => new(
+            (theta, phi) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+                ddouble cos_phi = ddouble.Cos(phi), sin_phi = ddouble.Sin(phi);
 
+                return new(
+                    sin_theta * cos_phi,
+                    sin_theta * sin_phi,
+                    cos_theta
+                );
+            },
+            (theta, phi) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+                ddouble cos_phi = ddouble.Cos(phi), sin_phi = ddouble.Sin(phi);
+
+                return new(
+                    (cos_theta * cos_phi, cos_theta * sin_phi, -sin_theta),
+                    (-sin_theta * sin_phi, sin_theta * cos_phi, 0d)
+                );
+            }
+        );
+        
+        public static Surface3D operator +(Surface3D surface, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
-                (r, theta) => {
-                    ddouble c = r * ddouble.Cos(theta), s = r * ddouble.Sin(theta);
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
 
-                    return (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s);
+                    return (x + translate.x, y + translate.y, z + translate.z);
                 },
-                (r, theta) => {
-                    ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+                surface.Diff
+            );
+        }
+
+        public static Surface3D operator *(Surface3D surface, ddouble scale) {
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
+
+                    return (x * scale, y * scale, z * scale);
+                },
+                (u, v) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
 
                     return (
-                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s),
-                        (r * (-a.x * s + b.x * c), r * (-a.y * s + b.y * c), r * (-a.z * s + b.z * c))
+                        (dxdu * scale, dydu * scale, dzdu * scale),
+                        (dxdv * scale, dydv * scale, dzdv * scale)
                     );
                 }
             );
         }
 
-        public static Surface3D Circle((ddouble x, ddouble y, ddouble z) center, (ddouble x, ddouble y, ddouble z) normal) {
-            ((ddouble x, ddouble y, ddouble z) a, (ddouble x, ddouble y, ddouble z) b) = VectorUtil.OrthoVector(normal);
-
+        public static Surface3D operator *(Surface3D surface, (ddouble x, ddouble y, ddouble z) scale) {
             return new(
-                (r, theta) => {
-                    ddouble c = r * ddouble.Cos(theta), s = r * ddouble.Sin(theta);
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
 
-                    return (center.x + a.x * c + b.x * s, center.y + a.y * c + b.y * s, center.z + a.z * c + b.z * s);
+                    return (x * scale.x, y * scale.y, z * scale.z);
                 },
-                (r, theta) => {
-                    ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+                (u, v) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
 
                     return (
-                        (a.x * c + b.x * s, a.y * c + b.y * s, a.z * c + b.z * s),
-                        (r * (-a.x * s + b.x * c), r * (-a.y * s + b.y * c), r * (-a.z * s + b.z * c))
+                        (dxdu * scale.x, dydu * scale.y, dzdu * scale.z),
+                        (dxdv * scale.x, dydv * scale.y, dzdv * scale.z)
                     );
+                }
+            );
+        }
+
+        public static Surface3D Rotate(Surface3D surface, (ddouble x, ddouble y, ddouble z) axis, ddouble theta) {
+            ddouble r = ddouble.Hypot(axis.x, axis.y, axis.z);
+            (ddouble nx, ddouble ny, ddouble nz) = (axis.x / r, axis.y / r, axis.z / r);
+
+            ddouble c = ddouble.Cos(theta), cm1 = 1d - c, s = ddouble.Sin(theta);
+
+            ddouble m00 = nx * nx * cm1 + c, m01 = nx * ny * cm1 - nz * s, m02 = nx * nz * cm1 + ny * s;
+            ddouble m10 = nx * ny * cm1 + nz * s, m11 = ny * ny * cm1 + c, m12 = ny * nz * cm1 - nx * s;
+            ddouble m20 = nx * nz * cm1 - ny * s, m21 = nz * ny * cm1 + nx * s, m22 = nz * nz * cm1 + c;
+
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
+
+                    return (
+                        x * m00 + y * m01 + z * m02,
+                        x * m10 + y * m11 + z * m12,
+                        x * m20 + y * m21 + z * m22
+                    );
+                },
+                (u, v) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
+
+                    return (
+                    (
+                        dxdu * m00 + dydu * m01 + dzdu * m02,
+                        dxdu * m10 + dydu * m11 + dzdu * m12,
+                        dxdu * m20 + dydu * m21 + dzdu * m22
+                    ),
+                    (
+                        dxdv * m00 + dydv * m01 + dzdv * m02,
+                        dxdv * m10 + dydv * m11 + dzdv * m12,
+                        dxdv * m20 + dydv * m21 + dzdv * m22
+                    ));
+                }
+            );
+        }
+
+        public static Surface3D operator *(Surface3D surface, ddouble[,] matrix) {
+            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 4) {
+                throw new ArgumentException("Invalid matrix size. expected: 3x4", nameof(matrix));
+            }
+
+            ddouble m00 = matrix[0, 0], m01 = matrix[0, 1], m02 = matrix[0, 2], m03 = matrix[0, 3];
+            ddouble m10 = matrix[1, 0], m11 = matrix[1, 1], m12 = matrix[1, 2], m13 = matrix[1, 3];
+            ddouble m20 = matrix[2, 0], m21 = matrix[2, 1], m22 = matrix[2, 2], m23 = matrix[2, 3];
+
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
+
+                    return (
+                        x * m00 + y * m01 + z * m02 + m03,
+                        x * m10 + y * m11 + z * m12 + m13,
+                        x * m20 + y * m21 + z * m22 + m23
+                    );
+                },
+                (u, v) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), 
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
+
+                    return (
+                    (
+                        dxdu * m00 + dydu * m01 + dzdu * m02,
+                        dxdu * m10 + dydu * m11 + dzdu * m12,
+                        dxdu * m20 + dydu * m21 + dzdu * m22
+                    ), 
+                    (
+                        dxdv * m00 + dydv * m01 + dzdv * m02,
+                        dxdv * m10 + dydv * m11 + dzdv * m12,
+                        dxdv * m20 + dydv * m21 + dzdv * m22
+                    ));
                 }
             );
         }
