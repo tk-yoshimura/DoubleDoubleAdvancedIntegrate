@@ -24,10 +24,14 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         public static Surface3D Circle => new(
             (r, theta) => (r * ddouble.Cos(theta), r * ddouble.Sin(theta), 0d),
-            (r, theta) => (
-                (ddouble.Cos(theta), ddouble.Sin(theta), 0d),
-                (-r * ddouble.Sin(theta), r * ddouble.Cos(theta), 0d)
-            )
+            (r, theta) => {
+                ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+
+                return (
+                    (c, s, 0d),
+                    (-r * c, r * s, 0d)
+                );
+            }
         );
 
         public static Surface3D Triangle((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1, (ddouble x, ddouble y, ddouble z) v2) {

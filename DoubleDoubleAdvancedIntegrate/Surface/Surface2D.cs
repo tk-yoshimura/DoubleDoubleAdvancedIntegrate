@@ -27,12 +27,37 @@ namespace DoubleDoubleAdvancedIntegrate {
             (u, v) => ((1d, 0d), (0d, 1d))
         );
 
+        public static Surface2D InfinityOrtho => new(
+            (u, v) => (InfSCurve.Value(u), InfSCurve.Value(v)),
+            (u, v) => ((InfSCurve.Diff(u), 0d), (0d, InfSCurve.Diff(v)))
+        );
+
         public static Surface2D Circle => new(
             (r, theta) => (r * ddouble.Cos(theta), r * ddouble.Sin(theta)),
-            (r, theta) => (
-                (ddouble.Cos(theta), ddouble.Sin(theta)),
-                (-r * ddouble.Sin(theta), r * ddouble.Cos(theta))
-            )
+            (r, theta) => {
+                ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+
+                return (
+                    (c, s),
+                    (-r * s, r * c)
+                );
+            }
+        );
+
+        public static Surface2D InfinityCircle => new(
+            (r, theta) => {
+                ddouble v = InfSCurve.Value(r);
+
+                return (v * ddouble.Cos(theta), v * ddouble.Sin(theta));
+            },
+            (r, theta) => {
+                ddouble c = ddouble.Cos(theta), s = ddouble.Sin(theta);
+                ddouble v = InfSCurve.Value(r), d = InfSCurve.Diff(r);
+
+                return (
+                    (d * c, d * s),
+                    (-v * s, v * c));
+            }
         );
 
         public static Surface2D Triangle((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {

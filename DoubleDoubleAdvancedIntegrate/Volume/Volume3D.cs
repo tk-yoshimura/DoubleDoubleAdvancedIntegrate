@@ -33,6 +33,11 @@ namespace DoubleDoubleAdvancedIntegrate {
             (u, v, w) => ((1d, 0d, 0d), (0d, 1d, 0d), (0d, 0d, 1d))
         );
 
+        public static Volume3D InfinityOrtho => new(
+            (u, v, w) => (InfSCurve.Value(u), InfSCurve.Value(v), InfSCurve.Value(w)),
+            (u, v, w) => ((InfSCurve.Diff(u), 0d, 0d), (0d, InfSCurve.Diff(v), 0d), (0d, 0d, InfSCurve.Diff(w)))
+        );
+
         public static Volume3D Tetrahedron(
             (ddouble x, ddouble y, ddouble z) v0,
             (ddouble x, ddouble y, ddouble z) v1,
@@ -100,6 +105,31 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (sin_theta * cos_phi, sin_theta * sin_phi, cos_theta),
                     (r * cos_theta * cos_phi, r * cos_theta * sin_phi, -r * sin_theta),
                     (-r * sin_theta * sin_phi, r * sin_theta * cos_phi, 0d)
+                );
+            }
+        );
+
+        public static Volume3D InfinitySphere => new(
+            (r, theta, phi) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+                ddouble cos_phi = ddouble.Cos(phi), sin_phi = ddouble.Sin(phi);
+                ddouble v = InfSCurve.Value(r);
+
+                return new(
+                    v * sin_theta * cos_phi,
+                    v * sin_theta * sin_phi,
+                    v * cos_theta
+                );
+            },
+            (r, theta, phi) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+                ddouble cos_phi = ddouble.Cos(phi), sin_phi = ddouble.Sin(phi);
+                ddouble v = InfSCurve.Value(r), d = InfSCurve.Diff(r);
+
+                return new(
+                    (d * sin_theta * cos_phi, d * sin_theta * sin_phi, d * cos_theta),
+                    (v * cos_theta * cos_phi, v * cos_theta * sin_phi, -v * sin_theta),
+                    (-v * sin_theta * sin_phi, v * sin_theta * cos_phi, 0d)
                 );
             }
         );

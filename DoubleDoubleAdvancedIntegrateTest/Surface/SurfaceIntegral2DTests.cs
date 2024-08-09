@@ -101,5 +101,35 @@ namespace DoubleDoubleAdvancedIntegrateTest {
 
             Assert.IsTrue(ddouble.Abs(value - 1d / 3) < 1e-14);
         }
+
+        [TestMethod()]
+        public void Test8() {
+            (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
+                (x, y) => 1,
+                Surface2D.InfinityOrtho,
+                (InfSCurve.Invert(-4), InfSCurve.Invert(8)), (InfSCurve.Invert(-2), InfSCurve.Invert(6)),
+                eps: 0, maxdepth: 4
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 96) < 1e-4);
+        }
+
+        [TestMethod()]
+        public void Test9() {
+            (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
+                (x, y) => ddouble.Exp(-(x * x + y * y)),
+                Surface2D.InfinityCircle,
+                Interval.Unit, Interval.OmniAzimuth,
+                eps: 0, maxdepth: 4
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - ddouble.PI) < 1e-4);
+        }
     }
 }
