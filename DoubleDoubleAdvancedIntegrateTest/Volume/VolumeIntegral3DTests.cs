@@ -3,7 +3,7 @@ using DoubleDoubleAdvancedIntegrate;
 
 namespace DoubleDoubleAdvancedIntegrateTest {
     [TestClass()]
-    public class VolumeIntegralTests {
+    public class VolumeIntegral3DTests {
         [TestMethod()]
         public void Test1() {
             (ddouble value, ddouble error) = VolumeIntegral.Integrate(
