@@ -32,6 +32,11 @@ namespace DoubleDoubleAdvancedIntegrate {
             t => (-ddouble.Sin(t), ddouble.Cos(t), 0d)
         );
 
+        public static Line3D Helix = new(
+            t => (ddouble.Cos(t), ddouble.Sin(t), t),
+            t => (-ddouble.Sin(t), ddouble.Cos(t), 1d)
+        );
+
         public static Line3D operator +(Line3D line, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
                 t => {

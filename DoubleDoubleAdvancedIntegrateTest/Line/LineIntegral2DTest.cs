@@ -9,7 +9,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = LineIntegral.AdaptiveIntegrate(
                 (x, y) => x * x + y * y,
                 Line2D.Circle,
-                0, ddouble.PI * 2, 1e-28, maxdepth: 16
+                Interval.OmniAzimuth, 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);
@@ -24,7 +24,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                     t => (t, t * t),
                     t => (1, 2 * t)
                 ),
-                0, 1, 1e-28, maxdepth: 16
+                Interval.Unit, 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);

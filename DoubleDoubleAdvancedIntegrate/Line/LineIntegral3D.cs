@@ -8,19 +8,19 @@ namespace DoubleDoubleAdvancedIntegrate {
         public static (ddouble value, ddouble error) Integrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Line3D line,
-            ddouble a, ddouble b, GaussKronrodOrder order = GaussKronrodOrder.G31K63) {
+            (ddouble min, ddouble max) range, GaussKronrodOrder order = GaussKronrodOrder.G31K63) {
 
             ReadOnlyCollection<(ddouble x, ddouble wg, ddouble wk)> ps = GaussKronrodPoints.Table[order];
 
             ddouble sg = ddouble.Zero, sk = ddouble.Zero;
-            ddouble r = b - a;
+            ddouble r = range.max - range.min;
 
             if (!ddouble.IsFinite(r)) {
-                throw new ArgumentException("Invalid integation interval.", $"{nameof(a)},{nameof(b)}");
+                throw new ArgumentException("Invalid integation interval.", nameof(range));
             }
 
             for (int i = 0; i < ps.Count; i++) {
-                ddouble t = ps[i].x * r + a;
+                ddouble t = ps[i].x * r + range.min;
 
                 (ddouble x, ddouble y, ddouble z) = line.Value(t);
                 (ddouble dx, ddouble dy, ddouble dz) = line.Diff(t);
@@ -47,18 +47,18 @@ namespace DoubleDoubleAdvancedIntegrate {
         private static (ddouble value, ddouble error, long eval_points) UnlimitedIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Line3D line,
-            ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order) {
+            (ddouble min, ddouble max) range, ddouble eps, GaussKronrodOrder order) {
 
-            Stack<(ddouble a, ddouble b, ddouble eps)> stack = new();
-            stack.Push((a, b, eps));
+            Stack<((ddouble min, ddouble max) range, ddouble eps)> stack = new();
+            stack.Push((range, eps));
 
             long eval_points_sum = 0;
             ddouble value_sum = 0d, error_sum = 0d;
 
             while (stack.Count > 0) {
-                (a, b, eps) = stack.Pop();
+                (range, eps) = stack.Pop();
 
-                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, range, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -69,9 +69,10 @@ namespace DoubleDoubleAdvancedIntegrate {
                     continue;
                 }
 
-                ddouble ab = ddouble.Ldexp(a + b, -1), eps_half = ddouble.Ldexp(eps, -1);
-                stack.Push((a, ab, eps_half));
-                stack.Push((ab, b, eps_half));
+                ddouble c = ddouble.Ldexp(range.min + range.max, -1);
+                ddouble eps_half = ddouble.Ldexp(eps, -1);
+                stack.Push(((range.min, c), eps_half));
+                stack.Push(((c, range.max), eps_half));
             }
 
             return (value_sum, error_sum, eval_points_sum);
@@ -80,20 +81,20 @@ namespace DoubleDoubleAdvancedIntegrate {
         private static (ddouble value, ddouble error, long eval_points) LimitedDepthIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Line3D line,
-            ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order, int maxdepth) {
+            (ddouble min, ddouble max) range, ddouble eps, GaussKronrodOrder order, int maxdepth) {
 
             Debug.Assert(maxdepth >= 0);
 
-            Stack<(ddouble a, ddouble b, ddouble eps, int depth)> stack = new();
-            stack.Push((a, b, eps, maxdepth));
+            Stack<((ddouble min, ddouble max) range, ddouble eps, int depth)> stack = new();
+            stack.Push((range, eps, maxdepth));
 
             long eval_points_sum = 0;
             ddouble value_sum = 0d, error_sum = 0d;
 
             while (stack.Count > 0) {
-                (a, b, eps, int depth) = stack.Pop();
+                (range, eps, int depth) = stack.Pop();
 
-                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, range, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -104,10 +105,11 @@ namespace DoubleDoubleAdvancedIntegrate {
                     continue;
                 }
 
-                ddouble ab = ddouble.Ldexp(a + b, -1), eps_half = ddouble.Ldexp(eps, -1);
+                ddouble c = ddouble.Ldexp(range.min + range.max, -1);
+                ddouble eps_half = ddouble.Ldexp(eps, -1);
                 depth -= 1;
-                stack.Push((a, ab, eps_half, depth));
-                stack.Push((ab, b, eps_half, depth));
+                stack.Push(((range.min, c), eps_half, depth));
+                stack.Push(((c, range.max), eps_half, depth));
             }
 
             return (value_sum, error_sum, eval_points_sum);
@@ -116,20 +118,20 @@ namespace DoubleDoubleAdvancedIntegrate {
         private static (ddouble value, ddouble error, long eval_points) LimitedEvalIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Line3D line,
-            ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order, long discontinue_eval_points) {
+            (ddouble min, ddouble max) range, ddouble eps, GaussKronrodOrder order, long discontinue_eval_points) {
 
             Debug.Assert(discontinue_eval_points >= 0);
 
-            PriorityQueue<(ddouble a, ddouble b, ddouble eps), long> queue = new();
-            queue.Enqueue((a, b, eps), 0);
+            PriorityQueue<((ddouble min, ddouble max) range, ddouble eps), long> queue = new();
+            queue.Enqueue((range, eps), 0);
 
             long eval_points_sum = 0;
             ddouble value_sum = 0d, error_sum = 0d;
 
             while (queue.Count > 0) {
-                (a, b, eps) = queue.Dequeue();
+                (range, eps) = queue.Dequeue();
 
-                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, range, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -140,10 +142,11 @@ namespace DoubleDoubleAdvancedIntegrate {
                     continue;
                 }
 
-                ddouble ab = ddouble.Ldexp(a + b, -1), eps_half = ddouble.Ldexp(eps, -1);
+                ddouble c = ddouble.Ldexp(range.min + range.max, -1);
+                ddouble eps_half = ddouble.Ldexp(eps, -1);
                 long priority = double.ILogB((double)error);
-                queue.Enqueue((a, ab, eps_half), -priority);
-                queue.Enqueue((ab, b, eps_half), -priority);
+                queue.Enqueue(((range.min, c), eps_half), -priority);
+                queue.Enqueue(((c, range.max), eps_half), -priority);
             }
 
             return (value_sum, error_sum, eval_points_sum);
@@ -152,21 +155,21 @@ namespace DoubleDoubleAdvancedIntegrate {
         private static (ddouble value, ddouble error, long eval_points) LimitedDepthAndEvalIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Line3D line,
-            ddouble a, ddouble b, ddouble eps, GaussKronrodOrder order, int maxdepth, long discontinue_eval_points) {
+            (ddouble min, ddouble max) range, ddouble eps, GaussKronrodOrder order, int maxdepth, long discontinue_eval_points) {
 
             Debug.Assert(maxdepth >= 0);
             Debug.Assert(discontinue_eval_points >= 0);
 
-            PriorityQueue<(ddouble a, ddouble b, ddouble eps, int depth), long> queue = new();
-            queue.Enqueue((a, b, eps, maxdepth), 0);
+            PriorityQueue<((ddouble min, ddouble max) range, ddouble eps, int depth), long> queue = new();
+            queue.Enqueue((range, eps, maxdepth), 0);
 
             long eval_points_sum = 0;
             ddouble value_sum = 0d, error_sum = 0d;
 
             while (queue.Count > 0) {
-                (a, b, eps, int depth) = queue.Dequeue();
+                (range, eps, int depth) = queue.Dequeue();
 
-                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, range, order);
 
                 long eval_points = 1 + 2 * (int)order;
                 eval_points_sum += eval_points;
@@ -177,11 +180,12 @@ namespace DoubleDoubleAdvancedIntegrate {
                     continue;
                 }
 
-                ddouble ab = ddouble.Ldexp(a + b, -1), eps_half = ddouble.Ldexp(eps, -1);
+                ddouble c = ddouble.Ldexp(range.min + range.max, -1);
+                ddouble eps_half = ddouble.Ldexp(eps, -1);
                 long priority = double.ILogB((double)error);
                 depth -= 1;
-                queue.Enqueue((a, ab, eps_half, depth), -priority);
-                queue.Enqueue((ab, b, eps_half, depth), -priority);
+                queue.Enqueue(((range.min, c), eps_half, depth), -priority);
+                queue.Enqueue(((c, range.max), eps_half, depth), -priority);
             }
 
             return (value_sum, error_sum, eval_points_sum);
@@ -190,7 +194,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         public static (ddouble value, ddouble error, long eval_points) AdaptiveIntegrate(
             Func<ddouble, ddouble, ddouble, ddouble> f,
             Line3D line,
-            ddouble a, ddouble b, ddouble eps,
+            (ddouble min, ddouble max) range, ddouble eps,
             GaussKronrodOrder order = GaussKronrodOrder.G31K63, int maxdepth = -1, long discontinue_eval_points = -1) {
 
             if (maxdepth < -1) {
@@ -202,12 +206,12 @@ namespace DoubleDoubleAdvancedIntegrate {
             if (!(eps >= 0d)) {
                 throw new ArgumentOutOfRangeException(nameof(eps), "Invalid param. eps must be nonnegative value");
             }
-            if (!ddouble.IsFinite(a) || !ddouble.IsFinite(b) || !ddouble.IsFinite(a - b)) {
-                throw new ArgumentOutOfRangeException($"{nameof(a)}, {nameof(b)}", "Invalid param. interval must be finite");
+            if (!ddouble.IsFinite(range.min) || !ddouble.IsFinite(range.max) || !ddouble.IsFinite(range.min - range.max)) {
+                throw new ArgumentOutOfRangeException(nameof(range), "Invalid param. interval must be finite");
             }
 
             if (ddouble.IsZero(eps)) {
-                (ddouble value, ddouble error) = Integrate(f, line, a, b, order);
+                (ddouble value, ddouble error) = Integrate(f, line, range, order);
                 eps = ddouble.Ldexp(ddouble.Abs(value), -98);
                 eps = ddouble.Max(eps, 2.2e-308);
 
@@ -218,16 +222,16 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
 
             if (maxdepth >= 0 && discontinue_eval_points >= 0) {
-                return LimitedDepthAndEvalIntegrate(f, line, a, b, eps, order, maxdepth, discontinue_eval_points);
+                return LimitedDepthAndEvalIntegrate(f, line, range, eps, order, maxdepth, discontinue_eval_points);
             }
             if (maxdepth >= 0) {
-                return LimitedDepthIntegrate(f, line, a, b, eps, order, maxdepth);
+                return LimitedDepthIntegrate(f, line, range, eps, order, maxdepth);
             }
             if (discontinue_eval_points >= 0) {
-                return LimitedEvalIntegrate(f, line, a, b, eps, order, discontinue_eval_points);
+                return LimitedEvalIntegrate(f, line, range, eps, order, discontinue_eval_points);
             }
 
-            return UnlimitedIntegrate(f, line, a, b, eps, order);
+            return UnlimitedIntegrate(f, line, range, eps, order);
         }
     }
 }
