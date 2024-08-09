@@ -233,5 +233,28 @@ namespace DoubleDoubleAdvancedIntegrate {
                 }
             );
         }
+
+        public static Surface3D operator +(Surface3D surface) {
+            return surface;
+        }
+
+        public static Surface3D operator -(Surface3D surface) {
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
+
+                    return (-x, -y, -z);
+                },
+                (u, v) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
+
+                    return (
+                        (-dxdu, -dydu, -dzdu),
+                        (-dxdv, -dydv, -dzdv)
+                    );
+                }
+            );
+        }
     }
 }

@@ -108,5 +108,24 @@ namespace DoubleDoubleAdvancedIntegrate {
                 }
             );
         }
+
+        public static Line2D operator +(Line2D line) {
+            return line;
+        }
+
+        public static Line2D operator -(Line2D line) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y) = line.Value(t);
+
+                    return (-x, -y);
+                },
+                t => {
+                    (ddouble dxdt, ddouble dydt) = line.Diff(t);
+
+                    return (-dxdt, -dydt);
+                }
+            );
+        }
     }
 }

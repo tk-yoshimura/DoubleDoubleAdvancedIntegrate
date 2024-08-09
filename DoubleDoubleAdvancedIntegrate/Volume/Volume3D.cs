@@ -107,7 +107,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         public static Volume3D Cylinder => new(
             (r, theta, z) => {
                 ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
-                
+
                 return new(
                     r * cos_theta,
                     r * sin_theta,
@@ -303,6 +303,31 @@ namespace DoubleDoubleAdvancedIntegrate {
                         dxdw * m10 + dydw * m11 + dzdw * m12,
                         dxdw * m20 + dydw * m21 + dzdw * m22
                     ));
+                }
+            );
+        }
+
+        public static Volume3D operator +(Volume3D volume) {
+            return volume;
+        }
+
+        public static Volume3D operator -(Volume3D volume) {
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (-x, -y, -z);
+                },
+                (u, v, w) => {
+                    ((ddouble dxdu, ddouble dydu, ddouble dzdu),
+                     (ddouble dxdv, ddouble dydv, ddouble dzdv),
+                     (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
+
+                    return (
+                        (-dxdu, -dydu, -dzdu),
+                        (-dxdv, -dydv, -dzdv),
+                        (-dxdw, -dydw, -dzdw)
+                    );
                 }
             );
         }

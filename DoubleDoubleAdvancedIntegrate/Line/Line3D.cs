@@ -157,5 +157,24 @@ namespace DoubleDoubleAdvancedIntegrate {
                 }
             );
         }
+
+        public static Line3D operator +(Line3D line) {
+            return line;
+        }
+
+        public static Line3D operator -(Line3D line) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
+
+                    return (-x, -y, -z);
+                },
+                t => {
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
+
+                    return (-dxdt, -dydt, -dzdt);
+                }
+            );
+        }
     }
 }

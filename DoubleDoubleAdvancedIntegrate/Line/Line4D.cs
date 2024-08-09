@@ -63,5 +63,24 @@ namespace DoubleDoubleAdvancedIntegrate {
                     }
             );
         }
+
+        public static Line4D operator +(Line4D line) {
+            return line;
+        }
+
+        public static Line4D operator -(Line4D line) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z, ddouble w) = line.Value(t);
+
+                    return (-x, -y, -z, -w);
+                },
+                t => {
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = line.Diff(t);
+
+                    return (-dxdt, -dydt, -dzdt, -dwdt);
+                }
+            );
+        }
     }
 }

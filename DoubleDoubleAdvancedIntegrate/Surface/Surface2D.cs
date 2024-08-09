@@ -162,5 +162,28 @@ namespace DoubleDoubleAdvancedIntegrate {
                 }
             );
         }
+
+        public static Surface2D operator +(Surface2D surface) {
+            return surface;
+        }
+
+        public static Surface2D operator -(Surface2D surface) {
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y) = surface.Value(u, v);
+
+                    return (-x, -y);
+                },
+                (u, v) => {
+                    ((ddouble dxdu, ddouble dydu),
+                     (ddouble dxdv, ddouble dydv)) = surface.Diff(u, v);
+
+                    return (
+                        (-dxdu, -dydu),
+                        (-dxdv, -dydv)
+                    );
+                }
+            );
+        }
     }
 }
