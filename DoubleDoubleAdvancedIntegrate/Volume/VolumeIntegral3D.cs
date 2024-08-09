@@ -283,8 +283,14 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
 
             if (ddouble.IsZero(eps)) {
-                eps = ddouble.Ldexp(ddouble.Abs(Integrate(f, volume, u_range, v_range, w_range, order).value), -98);
+                (ddouble value, ddouble error) = Integrate(f, volume, u_range, v_range, w_range, order);
+                eps = ddouble.Ldexp(ddouble.Abs(value), -98);
                 eps = ddouble.Max(eps, 2.2e-308);
+
+                if (error < eps) {
+                    long eval_points = 1 + 2 * (long)order;
+                    return (value, error, eval_points * eval_points * eval_points);
+                }
             }
 
             if (maxdepth >= 0 && discontinue_eval_points >= 0) {
