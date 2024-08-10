@@ -26,13 +26,6 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         }
 
-        public Line4D(
-            Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> z, Func<ddouble, ddouble> w,
-            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt, Func<ddouble, ddouble> dwdt,
-            Func<ddouble, ddouble>? ds = null)
-
-            : this(t => (x(t), y(t), z(t), w(t)), t => (dxdt(t), dydt(t), dzdt(t), dwdt(t)), ds) { }
-
         public static Line4D Line((ddouble x, ddouble y, ddouble z, ddouble w) v0, (ddouble x, ddouble y, ddouble z, ddouble w) v1) {
             ddouble dx = v1.x - v0.x, dy = v1.y - v0.y, dz = v1.z - v0.z, dw = v1.w - v0.w;
             ddouble ds = ddouble.Hypot(ddouble.Hypot(dx, dy), ddouble.Hypot(dz, dw));
@@ -50,6 +43,18 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble x, ddouble y, ddouble z, ddouble w) = line.Value(t);
 
                     return (x + translate.x, y + translate.y, z + translate.z, w + translate.w);
+                },
+                line.Diff,
+                line.Ds
+            );
+        }
+
+        public static Line4D operator -(Line4D line, (ddouble x, ddouble y, ddouble z, ddouble w) translate) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z, ddouble w) = line.Value(t);
+
+                    return (x - translate.x, y - translate.y, z - translate.z, w - translate.w);
                 },
                 line.Diff,
                 line.Ds

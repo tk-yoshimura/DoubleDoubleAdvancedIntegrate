@@ -30,16 +30,6 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         }
 
-        public Surface3D(
-            Func<ddouble, ddouble, ddouble> x, Func<ddouble, ddouble, ddouble> y, Func<ddouble, ddouble, ddouble> z,
-            Func<ddouble, ddouble, ddouble> dxdu, Func<ddouble, ddouble, ddouble> dydu, Func<ddouble, ddouble, ddouble> dzdu,
-            Func<ddouble, ddouble, ddouble> dxdv, Func<ddouble, ddouble, ddouble> dydv, Func<ddouble, ddouble, ddouble> dzdv,
-            Func<ddouble, ddouble, ddouble>? ds = null)
-
-            : this((u, v) => (x(u, v), y(u, v), z(u, v)),
-                   (u, v) => ((dxdu(u, v), dydu(u, v), dzdu(u, v)), (dxdv(u, v), dydv(u, v), dzdv(u, v))),
-                   ds) { }
-
         public static Surface3D Circle => new(
             (r, theta) => (r * ddouble.Cos(theta), r * ddouble.Sin(theta), 0d),
             (r, theta) => {
@@ -47,10 +37,10 @@ namespace DoubleDoubleAdvancedIntegrate {
 
                 return (
                     (c, s, 0d),
-                    (-r * c, r * s, 0d)
+                    (-r * s, r * c, 0d)
                 );
             },
-            (r, theta) => r
+            (r, theta) => ddouble.Abs(r)
         );
 
         public static Surface3D Triangle((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1, (ddouble x, ddouble y, ddouble z) v2) {
@@ -130,6 +120,18 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
 
                     return (x + translate.x, y + translate.y, z + translate.z);
+                },
+                surface.Diff,
+                surface.Ds
+            );
+        }
+
+        public static Surface3D operator -(Surface3D surface, (ddouble x, ddouble y, ddouble z) translate) {
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
+
+                    return (x - translate.x, y - translate.y, z - translate.z);
                 },
                 surface.Diff,
                 surface.Ds

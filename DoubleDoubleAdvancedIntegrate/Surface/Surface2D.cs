@@ -26,14 +26,6 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         }
 
-        public Surface2D(
-            Func<ddouble, ddouble, ddouble> x, Func<ddouble, ddouble, ddouble> y,
-            Func<ddouble, ddouble, ddouble> dxdu, Func<ddouble, ddouble, ddouble> dydu,
-            Func<ddouble, ddouble, ddouble> dxdv, Func<ddouble, ddouble, ddouble> dydv,
-            Func<ddouble, ddouble, ddouble>? ds = null)
-
-            : this((u, v) => (x(u, v), y(u, v)), (u, v) => ((dxdu(u, v), dydu(u, v)), (dxdv(u, v), dydv(u, v))), ds) { }
-
         public static Surface2D Ortho => new(
             (u, v) => (u, v),
             (u, v) => ((1d, 0d), (0d, 1d)),
@@ -120,6 +112,18 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble x, ddouble y) = surface.Value(u, v);
 
                     return (x + translate.x, y + translate.y);
+                },
+                surface.Diff,
+                surface.Ds
+            );
+        }
+
+        public static Surface2D operator -(Surface2D surface, (ddouble x, ddouble y) translate) {
+            return new(
+                (u, v) => {
+                    (ddouble x, ddouble y) = surface.Value(u, v);
+
+                    return (x - translate.x, y - translate.y);
                 },
                 surface.Diff,
                 surface.Ds

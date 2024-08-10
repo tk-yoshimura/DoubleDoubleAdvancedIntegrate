@@ -26,13 +26,6 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         }
 
-        public Line3D(
-            Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> z,
-            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt,
-            Func<ddouble, ddouble>? ds = null)
-
-            : this(t => (x(t), y(t), z(t)), t => (dxdt(t), dydt(t), dzdt(t)), ds) { }
-
         public static Line3D Line((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1) {
             ddouble dx = v1.x - v0.x, dy = v1.y - v0.y, dz = v1.z - v0.z;
             ddouble ds = ddouble.Hypot(dx, dy, dz);
@@ -62,6 +55,18 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble x, ddouble y, ddouble z) = line.Value(t);
 
                     return (x + translate.x, y + translate.y, z + translate.z);
+                },
+                line.Diff,
+                line.Ds
+            );
+        }
+
+        public static Line3D operator -(Line3D line, (ddouble x, ddouble y, ddouble z) translate) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z) = line.Value(t);
+
+                    return (x - translate.x, y - translate.y, z - translate.z);
                 },
                 line.Diff,
                 line.Ds

@@ -33,20 +33,6 @@ namespace DoubleDoubleAdvancedIntegrate {
             }
         }
 
-        public Volume3D(
-            Func<ddouble, ddouble, ddouble, ddouble> x, Func<ddouble, ddouble, ddouble, ddouble> y, Func<ddouble, ddouble, ddouble, ddouble> z,
-            Func<ddouble, ddouble, ddouble, ddouble> dxdu, Func<ddouble, ddouble, ddouble, ddouble> dydu, Func<ddouble, ddouble, ddouble, ddouble> dzdu,
-            Func<ddouble, ddouble, ddouble, ddouble> dxdv, Func<ddouble, ddouble, ddouble, ddouble> dydv, Func<ddouble, ddouble, ddouble, ddouble> dzdv,
-            Func<ddouble, ddouble, ddouble, ddouble> dxdw, Func<ddouble, ddouble, ddouble, ddouble> dydw, Func<ddouble, ddouble, ddouble, ddouble> dzdw,
-            Func<ddouble, ddouble, ddouble, ddouble>? ds = null)
-
-            : this((u, v, w) => (x(u, v, w), y(u, v, w), z(u, v, w)),
-                   (u, v, w) => (
-                        (dxdu(u, v, w), dydu(u, v, w), dzdu(u, v, w)),
-                        (dxdv(u, v, w), dydv(u, v, w), dzdv(u, v, w)),
-                        (dxdw(u, v, w), dydw(u, v, w), dzdw(u, v, w))
-            ), ds) { }
-
         public static Volume3D Ortho => new(
             (u, v, w) => (u, v, w),
             (u, v, w) => ((1d, 0d, 0d), (0d, 1d, 0d), (0d, 0d, 1d)),
@@ -220,6 +206,18 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
 
                     return (x + translate.x, y + translate.y, z + translate.z);
+                },
+                volume.Diff,
+                volume.Ds
+            );
+        }
+
+        public static Volume3D operator -(Volume3D volume, (ddouble x, ddouble y, ddouble z) translate) {
+            return new(
+                (u, v, w) => {
+                    (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
+
+                    return (x - translate.x, y - translate.y, z - translate.z);
                 },
                 volume.Diff,
                 volume.Ds
