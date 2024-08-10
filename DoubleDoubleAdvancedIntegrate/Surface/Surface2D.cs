@@ -2,34 +2,48 @@
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Surface2D {
-        public Func<ddouble, ddouble, (ddouble x, ddouble y)> Value { get; }
-        public Func<ddouble, ddouble, ((ddouble dx, ddouble dy) du, (ddouble dx, ddouble dy) dv)> Diff { get; }
+        public virtual Func<ddouble, ddouble, (ddouble x, ddouble y)> Value { get; }
+        public virtual Func<ddouble, ddouble, ((ddouble dx, ddouble dy) du, (ddouble dx, ddouble dy) dv)> Diff { get; }
+        public Func<ddouble, ddouble, ddouble> Ds { get; }
 
         public Surface2D(
             Func<ddouble, ddouble, (ddouble x, ddouble y)> value,
-            Func<ddouble, ddouble, ((ddouble dx, ddouble dy) du, (ddouble dx, ddouble dy) dv)> diff) {
+            Func<ddouble, ddouble, ((ddouble dx, ddouble dy) du, (ddouble dx, ddouble dy) dv)> diff, 
+            Func<ddouble, ddouble, ddouble>? ds = null) {
 
             Value = value;
             Diff = diff;
+
+            if (ds is not null) {
+                Ds = ds;
+            }
+            else {
+                Ds = (u, v) => {
+                    ((ddouble dxdu, ddouble dydu), (ddouble dxdv, ddouble dydv)) = Diff(u, v);
+
+                    return ddouble.Abs(dxdu * dydv - dydu * dxdv);
+                };
+            }
         }
 
         public Surface2D(
             Func<ddouble, ddouble, ddouble> x, Func<ddouble, ddouble, ddouble> y,
             Func<ddouble, ddouble, ddouble> dxdu, Func<ddouble, ddouble, ddouble> dydu,
-            Func<ddouble, ddouble, ddouble> dxdv, Func<ddouble, ddouble, ddouble> dydv) {
+            Func<ddouble, ddouble, ddouble> dxdv, Func<ddouble, ddouble, ddouble> dydv,
+            Func<ddouble, ddouble, ddouble>? ds = null)
 
-            Value = (u, v) => (x(u, v), y(u, v));
-            Diff = (u, v) => ((dxdu(u, v), dydu(u, v)), (dxdv(u, v), dydv(u, v)));
-        }
+            : this((u, v) => (x(u, v), y(u, v)), (u, v) => ((dxdu(u, v), dydu(u, v)), (dxdv(u, v), dydv(u, v))), ds) { }
 
         public static Surface2D Ortho => new(
             (u, v) => (u, v),
-            (u, v) => ((1d, 0d), (0d, 1d))
+            (u, v) => ((1d, 0d), (0d, 1d)),
+            (u, v) => 1d
         );
 
         public static Surface2D InfinityOrtho => new(
             (u, v) => (InfSCurve.Value(u), InfSCurve.Value(v)),
-            (u, v) => ((InfSCurve.Diff(u), 0d), (0d, InfSCurve.Diff(v)))
+            (u, v) => ((InfSCurve.Diff(u), 0d), (0d, InfSCurve.Diff(v))),
+            (u, v) => InfSCurve.Diff(u) * InfSCurve.Diff(v)
         );
 
         public static Surface2D Circle => new(
@@ -41,7 +55,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (c, s),
                     (-r * s, r * c)
                 );
-            }
+            },
+            (r, theta) => ddouble.Abs(r)
         );
 
         public static Surface2D InfinityCircle => new(
@@ -57,12 +72,15 @@ namespace DoubleDoubleAdvancedIntegrate {
                 return (
                     (d * c, d * s),
                     (-v * s, v * c));
-            }
+            },
+            (r, theta) => ddouble.Abs(InfSCurve.Value(r) * InfSCurve.Diff(r))
         );
 
         public static Surface2D Triangle((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
             ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y;
             ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y;
+
+            ddouble ds = ddouble.Abs(dx01 * dy02 - dx02 * dy01);
 
             return new(
                 (u, v) => (
@@ -72,13 +90,16 @@ namespace DoubleDoubleAdvancedIntegrate {
                 (u, v) => (
                     (dx01 - v * dx02, dy01 - v * dy02),
                     ((1d - u) * dx02, (1d - u) * dy02)
-                )
+                ),
+                (u, v) => ds * ddouble.Abs(1d - u)
             );
         }
 
         public static Surface2D Rhombus((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
             ddouble dx01 = v1.x - v0.x, dy01 = v1.y - v0.y;
             ddouble dx02 = v2.x - v0.x, dy02 = v2.y - v0.y;
+
+            ddouble ds = ddouble.Abs(dx01 * dy02 - dx02 * dy01);
 
             return new(
                 (u, v) => (
@@ -88,7 +109,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                 (u, v) => (
                     (dx01, dy01),
                     (dx02, dy02)
-                )
+                ),
+                (u, v) => ds
             );
         }
 
@@ -99,11 +121,14 @@ namespace DoubleDoubleAdvancedIntegrate {
 
                     return (x + translate.x, y + translate.y);
                 },
-                surface.Diff
+                surface.Diff,
+                surface.Ds
             );
         }
 
         public static Surface2D operator *(Surface2D surface, ddouble scale) {
+            ddouble sq_scale = scale * scale;
+
             return new(
                 (u, v) => {
                     (ddouble x, ddouble y) = surface.Value(u, v);
@@ -118,7 +143,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                         (dxdu * scale, dydu * scale),
                         (dxdv * scale, dydv * scale)
                     );
-                }
+                },
+                (u, v) => surface.Ds(u, v) * sq_scale
             );
         }
 
@@ -158,7 +184,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                         (dxdu * c - dydu * s, dxdu * s + dydu * c),
                         (dxdv * c - dydv * s, dxdv * s + dydv * c)
                     );
-                }
+                },
+                surface.Ds
             );
         }
 
@@ -207,7 +234,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                         (-dxdu, -dydu),
                         (-dxdv, -dydv)
                     );
-                }
+                },
+                surface.Ds
             );
         }
     }

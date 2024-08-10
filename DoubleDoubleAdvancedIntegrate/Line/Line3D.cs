@@ -4,37 +4,56 @@ namespace DoubleDoubleAdvancedIntegrate {
     public class Line3D {
         public virtual Func<ddouble, (ddouble x, ddouble y, ddouble z)> Value { get; }
         public virtual Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> Diff { get; }
+        public Func<ddouble, ddouble> Ds { get; }
 
-        public Line3D(Func<ddouble, (ddouble x, ddouble y, ddouble z)> value, Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> diff) {
+        public Line3D(
+            Func<ddouble, (ddouble x, ddouble y, ddouble z)> value, 
+            Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> diff, 
+            Func<ddouble, ddouble>? ds = null) {
+
             Value = value;
             Diff = diff;
+
+            if (ds is not null) {
+                Ds = ds;
+            }
+            else {
+                Ds = t => {
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt) = Diff(t);
+
+                    return ddouble.Hypot(dxdt, dydt, dzdt);
+                };
+            }
         }
 
         public Line3D(
             Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> z,
-            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt) {
+            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt, 
+            Func<ddouble, ddouble>? ds = null) 
 
-            Value = t => (x(t), y(t), z(t));
-            Diff = t => (dxdt(t), dydt(t), dzdt(t));
-        }
+            : this(t => (x(t), y(t), z(t)), t => (dxdt(t), dydt(t), dzdt(t)), ds) { }
 
         public static Line3D Line((ddouble x, ddouble y, ddouble z) v0, (ddouble x, ddouble y, ddouble z) v1) {
             ddouble dx = v1.x - v0.x, dy = v1.y - v0.y, dz = v1.z - v0.z;
+            ddouble ds = ddouble.Hypot(dx, dy, dz);
 
             return new(
                 t => (v0.x + t * dx, v0.y + t * dy, v0.z + t * dz),
-                t => (dx, dy, dz)
+                t => (dx, dy, dz),
+                t => ds 
             );
         }
 
         public static Line3D Circle = new(
             t => (ddouble.Cos(t), ddouble.Sin(t), 0d),
-            t => (-ddouble.Sin(t), ddouble.Cos(t), 0d)
+            t => (-ddouble.Sin(t), ddouble.Cos(t), 0d),
+            t => 1d
         );
 
         public static Line3D Helix = new(
             t => (ddouble.Cos(t), ddouble.Sin(t), t),
-            t => (-ddouble.Sin(t), ddouble.Cos(t), 1d)
+            t => (-ddouble.Sin(t), ddouble.Cos(t), 1d),
+            t => ddouble.Sqrt2
         );
 
         public static Line3D operator +(Line3D line, (ddouble x, ddouble y, ddouble z) translate) {
@@ -44,11 +63,14 @@ namespace DoubleDoubleAdvancedIntegrate {
 
                     return (x + translate.x, y + translate.y, z + translate.z);
                 },
-                line.Diff
+                line.Diff,
+                line.Ds
             );
         }
 
         public static Line3D operator *(Line3D line, ddouble scale) {
+            ddouble abs_scale = ddouble.Abs(scale);
+
             return new(
                 t => {
                     (ddouble x, ddouble y, ddouble z) = line.Value(t);
@@ -59,7 +81,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
 
                     return (dxdt * scale, dydt * scale, dzdt * scale);
-                }
+                },
+                t => line.Ds(t) * abs_scale
             );
         }
 
@@ -106,7 +129,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                         dxdt * m10 + dydt * m11 + dzdt * m12,
                         dxdt * m20 + dydt * m21 + dzdt * m22
                     );
-                }
+                },
+                line.Ds
             );
         }
 
@@ -178,7 +202,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble dxdt, ddouble dydt, ddouble dzdt) = line.Diff(t);
 
                     return (-dxdt, -dydt, -dzdt);
-                }
+                },
+                line.Ds
             );
         }
     }

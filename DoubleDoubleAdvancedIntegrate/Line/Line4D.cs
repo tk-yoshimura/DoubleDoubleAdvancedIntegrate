@@ -4,29 +4,88 @@ namespace DoubleDoubleAdvancedIntegrate {
     public class Line4D {
         public virtual Func<ddouble, (ddouble x, ddouble y, ddouble z, ddouble w)> Value { get; }
         public virtual Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt)> Diff { get; }
+        public Func<ddouble, ddouble> Ds { get; }
 
         public Line4D(
             Func<ddouble, (ddouble x, ddouble y, ddouble z, ddouble w)> value,
-            Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt)> diff) {
+            Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt)> diff, 
+            Func<ddouble, ddouble>? ds = null) {
 
             Value = value;
             Diff = diff;
+
+            if (ds is not null) {
+                Ds = ds;
+            }
+            else {
+                Ds = t => {
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = Diff(t);
+
+                    return ddouble.Hypot(ddouble.Hypot(dxdt, dydt), ddouble.Hypot(dzdt, dwdt));
+                };
+            }
         }
 
         public Line4D(
             Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> z, Func<ddouble, ddouble> w,
-            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt, Func<ddouble, ddouble> dwdt) {
+            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt, Func<ddouble, ddouble> dwdt, 
+            Func<ddouble, ddouble>? ds = null) 
 
-            Value = t => (x(t), y(t), z(t), w(t));
-            Diff = t => (dxdt(t), dydt(t), dzdt(t), dwdt(t));
-        }
+            : this(t => (x(t), y(t), z(t), w(t)), t => (dxdt(t), dydt(t), dzdt(t), dwdt(t)), ds) { }
 
         public static Line4D Line((ddouble x, ddouble y, ddouble z, ddouble w) v0, (ddouble x, ddouble y, ddouble z, ddouble w) v1) {
             ddouble dx = v1.x - v0.x, dy = v1.y - v0.y, dz = v1.z - v0.z, dw = v1.w - v0.w;
+            ddouble ds = ddouble.Hypot(ddouble.Hypot(dx, dy), ddouble.Hypot(dz, dw));
 
             return new(
                 t => (v0.x + t * dx, v0.y + t * dy, v0.z + t * dz, v0.w + t * dw),
-                t => (dx, dy, dz, dw)
+                t => (dx, dy, dz, dw),
+                t => ds
+            );
+        }
+
+        public static Line4D operator +(Line4D line, (ddouble x, ddouble y, ddouble z, ddouble w) translate) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z, ddouble w) = line.Value(t);
+
+                    return (x + translate.x, y + translate.y, z + translate.z, w + translate.w);
+                },
+                line.Diff,
+                line.Ds
+            );
+        }
+
+        public static Line4D operator *(Line4D line, ddouble scale) {
+            ddouble abs_scale = ddouble.Abs(scale);
+
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z, ddouble w) = line.Value(t);
+
+                    return (x * scale, y * scale, z * scale, w * scale);
+                },
+                t => {
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = line.Diff(t);
+
+                    return (dxdt * scale, dydt * scale, dzdt * scale, dwdt * scale);
+                },
+                t => line.Ds(t) * abs_scale
+            );
+        }
+
+        public static Line4D operator *(Line4D line, (ddouble x, ddouble y, ddouble z, ddouble w) scale) {
+            return new(
+                t => {
+                    (ddouble x, ddouble y, ddouble z, ddouble w) = line.Value(t);
+
+                    return (x * scale.x, y * scale.y, z * scale.z, w * scale.w);
+                },
+                t => {
+                    (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = line.Diff(t);
+
+                    return (dxdt * scale.x, dydt * scale.y, dzdt * scale.z, dwdt * scale.w);
+                }
             );
         }
 
@@ -79,7 +138,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = line.Diff(t);
 
                     return (-dxdt, -dydt, -dzdt, -dwdt);
-                }
+                },
+                line.Ds
             );
         }
     }

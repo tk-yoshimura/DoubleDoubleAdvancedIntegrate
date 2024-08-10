@@ -36,18 +36,9 @@ namespace DoubleDoubleAdvancedIntegrate {
                         ddouble w = ps[k].x * rw + w_range.min;
 
                         (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
-                        ((ddouble dxdu, ddouble dydu, ddouble dzdu),
-                         (ddouble dxdv, ddouble dydv, ddouble dzdv),
-                         (ddouble dxdw, ddouble dydw, ddouble dzdw)) = volume.Diff(u, v, w);
-                        ddouble value = f(x, y, z);
-
-                        ddouble jacobian = ddouble.Abs(
-                            dxdu * (dydv * dzdw - dydw * dzdv) -
-                            dxdv * (dydu * dzdw - dydw * dzdu) +
-                            dxdw * (dydu * dzdv - dydv * dzdu)
-                        );
-
-                        ddouble g = value * jacobian;
+                        ddouble dsduvw = volume.Ds(u, v, w);
+                    
+                        ddouble g = f(x, y, z) * dsduvw;
 
                         sk += ps[i].wk * ps[j].wk * ps[k].wk * g;
 

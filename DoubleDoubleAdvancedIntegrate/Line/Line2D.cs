@@ -4,29 +4,50 @@ namespace DoubleDoubleAdvancedIntegrate {
     public class Line2D {
         public virtual Func<ddouble, (ddouble x, ddouble y)> Value { get; }
         public virtual Func<ddouble, (ddouble dxdt, ddouble dydt)> Diff { get; }
+        public Func<ddouble, ddouble> Ds { get; }
 
-        public Line2D(Func<ddouble, (ddouble x, ddouble y)> value, Func<ddouble, (ddouble dxdt, ddouble dydt)> diff) {
+        public Line2D(
+            Func<ddouble, (ddouble x, ddouble y)> value, 
+            Func<ddouble, (ddouble dxdt, ddouble dydt)> diff, 
+            Func<ddouble, ddouble>? ds = null) {
+
             Value = value;
             Diff = diff;
+
+            if (ds is not null) {
+                Ds = ds;
+            }
+            else {
+                Ds = t => {
+                    (ddouble dxdt, ddouble dydt) = Diff(t);
+
+                    return ddouble.Hypot(dxdt, dydt);
+                };
+            }
         }
 
-        public Line2D(Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt) {
-            Value = t => (x(t), y(t));
-            Diff = t => (dxdt(t), dydt(t));
-        }
+        public Line2D(
+            Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, 
+            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, 
+            Func<ddouble, ddouble>? ds = null) 
+
+            : this(t => (x(t), y(t)), t => (dxdt(t), dydt(t)), ds) { }
 
         public static Line2D Line((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1) {
             ddouble dx = v1.x - v0.x, dy = v1.y - v0.y;
+            ddouble ds = ddouble.Hypot(dx, dy);
 
             return new(
                 t => (v0.x + t * dx, v0.y + t * dy),
-                t => (dx, dy)
+                t => (dx, dy),
+                t => ds
             );
         }
 
         public static Line2D Circle => new(
             t => (ddouble.Cos(t), ddouble.Sin(t)),
-            t => (-ddouble.Sin(t), ddouble.Cos(t))
+            t => (-ddouble.Sin(t), ddouble.Cos(t)),
+            t => 1d
         );
 
         public static Line2D operator +(Line2D line, (ddouble x, ddouble y) translate) {
@@ -36,11 +57,14 @@ namespace DoubleDoubleAdvancedIntegrate {
 
                     return (x + translate.x, y + translate.y);
                 },
-                line.Diff
+                line.Diff,
+                line.Ds
             );
         }
 
         public static Line2D operator *(Line2D line, ddouble scale) {
+            ddouble abs_scale = ddouble.Abs(scale);
+
             return new(
                 t => {
                     (ddouble x, ddouble y) = line.Value(t);
@@ -51,7 +75,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble dxdt, ddouble dydt) = line.Diff(t);
 
                     return (dxdt * scale, dydt * scale);
-                }
+                },
+                t => line.Ds(t) * abs_scale
             );
         }
 
@@ -124,7 +149,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (ddouble dxdt, ddouble dydt) = line.Diff(t);
 
                     return (-dxdt, -dydt);
-                }
+                },
+                line.Ds
             );
         }
     }

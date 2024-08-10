@@ -30,16 +30,9 @@ namespace DoubleDoubleAdvancedIntegrate {
                     ddouble v = ps[j].x * rv + v_range.min;
 
                     (ddouble x, ddouble y, ddouble z) = surface.Value(u, v);
-                    ((ddouble dxdu, ddouble dydu, ddouble dzdu), (ddouble dxdv, ddouble dydv, ddouble dzdv)) = surface.Diff(u, v);
-                    ddouble value = f(x, y, z);
-
-                    ddouble dsduv = ddouble.Hypot(
-                        dydu * dzdv - dzdu * dydv,
-                        dzdu * dxdv - dxdu * dzdv,
-                        dxdu * dydv - dydu * dxdv
-                    );
-
-                    ddouble g = value * dsduv;
+                    ddouble dsduv = surface.Ds(u, v);
+                    
+                    ddouble g = f(x, y, z) * dsduv;
 
                     sk += ps[i].wk * ps[j].wk * g;
 

@@ -23,9 +23,8 @@ namespace DoubleDoubleAdvancedIntegrate {
                 ddouble t = ps[i].x * r + range.min;
 
                 (ddouble x, ddouble y) = line.Value(t);
-                (ddouble dx, ddouble dy) = line.Diff(t);
 
-                ddouble dsdt = ddouble.Hypot(dx, dy);
+                ddouble dsdt = line.Ds(t);
 
                 ddouble v = f(x, y) * dsdt;
 
