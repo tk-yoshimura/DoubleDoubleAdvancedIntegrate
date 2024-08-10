@@ -73,7 +73,7 @@
 ### Surface Integral
 ```csharp
 // Surface integral on the [0, 2]x[0, 1] with integrand f(x, y) = (x - y)^2
-(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+(ddouble value, ddouble error, long eval_points) = SurfaceIntegral.AdaptiveIntegrate(
     (x, y) => ddouble.Square(x - y),
     Surface2D.Ortho,
     (0, 2), (0, 1), eps: 0, maxdepth: 4
@@ -82,7 +82,7 @@
 
 ```csharp
 // Surface integral on the triangle with integrand f(x, y) = 2 x + y
-(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+(ddouble value, ddouble error, long eval_points) = SurfaceIntegral.AdaptiveIntegrate(
     (x, y) => 2 * x + y,
     Surface2D.Triangle((0, 0), (1, 0), (0, 1)),
     Interval.Unit, Interval.Unit, eps: 0, maxdepth: 4
@@ -91,7 +91,7 @@
 
 ```csharp
 // 2-dimensional Gaussian integration in polar coordinates
-(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+(ddouble value, ddouble error, long eval_points) = SurfaceIntegral.AdaptiveIntegrate(
     (x, y) => ddouble.Exp(-(x * x + y * y)),
     Surface2D.InfinityCircle,
     Interval.Unit, Interval.OmniAzimuth, eps: 0, maxdepth: 4
@@ -100,7 +100,7 @@
 
 ```csharp
 // Surface integral on the unit sphere with integrand f(x, y, z) = x^2 + y + z^3
-(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+(ddouble value, ddouble error, long eval_points) = SurfaceIntegral.AdaptiveIntegrate(
     (x, y, z) => x * x + y + z * z * z,
     Surface3D.Sphere,
     Interval.OmniAltura, Interval.OmniAzimuth, eps: 0, maxdepth: 4
@@ -109,7 +109,7 @@
 
 ```csharp
 // Surface integral on the unit sphere and (x > 0) with integrand f(x, y, z) = x^2 + y + z^3
-(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+(ddouble value, ddouble error, long eval_points) = SurfaceIntegral.AdaptiveIntegrate(
     (x, y, z) => x * x + y + z * z * z,
     Surface3D.Rotate(Surface3D.Sphere, (0, 0, 1), (1, 0, 0)),
     (0, ddouble.PI / 2), Interval.OmniAzimuth, eps: 0, maxdepth: 4
@@ -119,7 +119,7 @@
 ### Volume Integral
 ```csharp
 // Volume integral on the ellipsoid with integrand f(x, y, z) = x^2 + y
-(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+(ddouble value, ddouble error, long eval_points) = VolumeIntegral.AdaptiveIntegrate(
     (x, y, z) => x * x + y,
     Volume3D.Sphere * (2, 3, 5),
     Interval.Unit, Interval.OmniAltura, Interval.OmniAzimuth,
