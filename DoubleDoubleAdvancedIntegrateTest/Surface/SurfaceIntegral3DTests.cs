@@ -202,5 +202,20 @@ namespace DoubleDoubleAdvancedIntegrateTest {
 
             Assert.IsTrue(ddouble.Abs(value - 1.4212911232567154) < 1e-6);
         }
+
+        [TestMethod()]
+        public void Test14() {
+            (ddouble value, ddouble error, _) = SurfaceIntegral.AdaptiveIntegrate(
+                (x, y, z) => 1,
+                Surface3D.Cylinder,
+                Interval.OmniAzimuth, (0, 2),
+                eps: 0, maxdepth: 4
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI) < 1e-6);
+        }
     }
 }

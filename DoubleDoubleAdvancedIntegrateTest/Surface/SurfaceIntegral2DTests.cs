@@ -131,5 +131,19 @@ namespace DoubleDoubleAdvancedIntegrateTest {
 
             Assert.IsTrue(ddouble.Abs(value - ddouble.PI) < 1e-4);
         }
+
+        [TestMethod()]
+        public void Test10() {
+            (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
+                (x, y) => 1,
+                Surface2D.Rhombus((0, 1), (1, 4), (2, 3)),
+                (0, 1), (0, 1)
+            );
+
+            Console.WriteLine(value);
+            Console.WriteLine($"{error:e4}");
+
+            Assert.IsTrue(ddouble.Abs(value - 4) < 1e-14);
+        }
     }
 }
