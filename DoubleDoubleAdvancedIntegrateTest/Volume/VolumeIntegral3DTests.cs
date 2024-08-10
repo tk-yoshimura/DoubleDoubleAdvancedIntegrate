@@ -170,8 +170,8 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.InfinityOrtho,
-                (InfSCurve.Invert(-4), InfSCurve.Invert(8)), 
-                (InfSCurve.Invert(-2), InfSCurve.Invert(6)), 
+                (InfSCurve.Invert(-4), InfSCurve.Invert(8)),
+                (InfSCurve.Invert(-2), InfSCurve.Invert(6)),
                 (InfSCurve.Invert(-1), InfSCurve.Invert(3)),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
