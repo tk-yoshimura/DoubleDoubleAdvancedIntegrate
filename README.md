@@ -98,6 +98,15 @@
 );
 ```
 
+```csharp
+// Surface integral on the unit sphere and (x > 0) with integrand f(x, y, z) = x^2 + y + z^3
+(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+    (x, y, z) => x * x + y + z * z * z,
+    Surface3D.Rotate(Surface3D.Sphere, (0, 0, 1), (1, 0, 0)),
+    (0, ddouble.PI / 2), Interval.OmniAzimuth, eps: 0, maxdepth: 4
+);
+```
+
 ### Volume Integral
 ```csharp
 // Volume integral on the ellipsoid with integrand f(x, y, z) = x^2 + y
