@@ -66,8 +66,8 @@
 // Surface integral on the [0, 2]x[0, 1] with integrand f(x, y) = (x - y)^2
 (ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
     (x, y) => ddouble.Square(x - y),
-	Surface2D.Ortho,
-	(0, 2), (0, 1), eps: 0, maxdepth: 4
+    Surface2D.Ortho,
+    (0, 2), (0, 1), eps: 0, maxdepth: 4
 );
 ```
 
