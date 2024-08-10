@@ -70,6 +70,23 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 Surface3D.Rotate(Surface3D.Sphere * (3, 4, 5), (1, 2, 3), 0.25),
                 Surface3D.Rotate(Surface3D.Sphere * (3, 4, 5) + (3, 4, 5), (1, 2, 3), 0.25),
                 Surface3D.Sphere * new ddouble[,]{ { 1, 2, 3, -1 }, { 4, -2, -3, 5 }, { -5, 7, -4, -3 } },
+
+                Surface3D.Cylinder,
+                Surface3D.Cylinder + (3, 4, 5),
+                Surface3D.Cylinder - (3, 4, 5),
+                Surface3D.Cylinder * 2,
+                Surface3D.Cylinder * (3, 4, 5),
+                Surface3D.Cylinder * (3, 4, 5) + (3, 4, 5),
+                +(Surface3D.Cylinder + (3, 4, 5)),
+                +(Surface3D.Cylinder * (3, 4, 5)),
+                -(Surface3D.Cylinder + (3, 4, 5)),
+                -(Surface3D.Cylinder * (3, 4, 5)),
+                Surface3D.Rotate(Surface3D.Cylinder, (1, 2, 3), 0.25),
+                Surface3D.Rotate(Surface3D.Cylinder, (1, 2, 3), (3, 1, -4)),
+                Surface3D.Rotate(Surface3D.Cylinder + (3, 4, 5), (1, 2, 3), 0.25),
+                Surface3D.Rotate(Surface3D.Cylinder * (3, 4, 5), (1, 2, 3), 0.25),
+                Surface3D.Rotate(Surface3D.Cylinder * (3, 4, 5) + (3, 4, 5), (1, 2, 3), 0.25),
+                Surface3D.Cylinder * new ddouble[,]{ { 1, 2, 3, -1 }, { 4, -2, -3, 5 }, { -5, 7, -4, -3 } },
             ];
 
             foreach (Surface3D testcase in testcases) {

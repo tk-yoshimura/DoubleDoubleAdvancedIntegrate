@@ -54,7 +54,8 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 (x, y, z, w) => x * x + y * y,
                 new Line4D(
                     t => (ddouble.Cos(t), ddouble.Sin(t), t, t),
-                    t => (-ddouble.Sin(t), ddouble.Cos(t), 1d, 1d)
+                    t => (-ddouble.Sin(t), ddouble.Cos(t), 1d, 1d),
+                    t => ddouble.Sqrt(3)
                 ),
                 (0, ddouble.PI * 2), 1e-28, maxdepth: 16
             );

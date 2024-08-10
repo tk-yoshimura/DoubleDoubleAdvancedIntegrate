@@ -114,6 +114,27 @@ namespace DoubleDoubleAdvancedIntegrate {
             (theta, phi) => ddouble.Sin(theta)
         );
 
+        public static Surface3D Cylinder => new(
+            (theta, z) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+
+                return new(
+                    cos_theta,
+                    sin_theta,
+                    z
+                );
+            },
+            (theta, z) => {
+                ddouble cos_theta = ddouble.Cos(theta), sin_theta = ddouble.Sin(theta);
+
+                return new(
+                    (-sin_theta, cos_theta, 0d),
+                    (0d, 0d, 1d)
+                );
+            },
+            (theta, z) => 1d
+        );
+
         public static Surface3D operator +(Surface3D surface, (ddouble x, ddouble y, ddouble z) translate) {
             return new(
                 (u, v) => {

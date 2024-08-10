@@ -176,7 +176,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (0d, 0d, 1d)
                 );
             },
-            (r, theta, phi) => ddouble.Abs(r)
+            (r, theta, z) => ddouble.Abs(r)
         );
 
         public static Volume3D TrigonalPrism((ddouble x, ddouble y) v0, (ddouble x, ddouble y) v1, (ddouble x, ddouble y) v2) {
