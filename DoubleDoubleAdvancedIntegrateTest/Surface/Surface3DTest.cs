@@ -72,8 +72,6 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                 Surface3D.Sphere * new ddouble[,]{ { 1, 2, 3, -1 }, { 4, -2, -3, 5 }, { -5, 7, -4, -3 } },
             ];
 
-            int idx = 0;
-
             foreach (Surface3D testcase in testcases) {
                 Surface3D testcase_resetds = new(testcase.Value, testcase.Diff);
 
@@ -93,15 +91,13 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                         ddouble ds_expected = testcase_resetds.Ds(u, v);
                         ddouble ds = testcase.Ds(u, v);
 
-                        Assert.IsTrue(ddouble.Abs(dxdu - dxdu_expected) < 1e-10, $"{idx}");
-                        Assert.IsTrue(ddouble.Abs(dydu - dydu_expected) < 1e-10, $"{idx}");
-                        Assert.IsTrue(ddouble.Abs(dzdu - dzdu_expected) < 1e-10, $"{idx}");
-                        Assert.IsTrue(ddouble.Abs(dxdv - dxdv_expected) < 1e-10, $"{idx}");
-                        Assert.IsTrue(ddouble.Abs(dydv - dydv_expected) < 1e-10, $"{idx}");
-                        Assert.IsTrue(ddouble.Abs(dzdv - dzdv_expected) < 1e-10, $"{idx}");
-                        Assert.IsTrue(ddouble.Abs(ds - ds_expected) < 1e-10, $"{idx}");
-
-                        idx++;
+                        Assert.IsTrue(ddouble.Abs(dxdu - dxdu_expected) < 1e-10);
+                        Assert.IsTrue(ddouble.Abs(dydu - dydu_expected) < 1e-10);
+                        Assert.IsTrue(ddouble.Abs(dzdu - dzdu_expected) < 1e-10);
+                        Assert.IsTrue(ddouble.Abs(dxdv - dxdv_expected) < 1e-10);
+                        Assert.IsTrue(ddouble.Abs(dydv - dydv_expected) < 1e-10);
+                        Assert.IsTrue(ddouble.Abs(dzdv - dzdv_expected) < 1e-10);
+                        Assert.IsTrue(ddouble.Abs(ds - ds_expected) < 1e-10);
                     }
                 }
             }

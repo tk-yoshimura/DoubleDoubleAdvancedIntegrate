@@ -28,7 +28,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                     (ddouble x_meps, ddouble y_meps, ddouble z_meps, ddouble w_meps) = testcase.Value(t - 1e-15);
                     (ddouble x_peps, ddouble y_peps, ddouble z_peps, ddouble w_peps) = testcase.Value(t + 1e-15);
 
-                    (ddouble dxdt_expected, ddouble dydt_expected, ddouble dzdt_expected, ddouble dwdt_expected) 
+                    (ddouble dxdt_expected, ddouble dydt_expected, ddouble dzdt_expected, ddouble dwdt_expected)
                         = ((x_peps - x_meps) / 2e-15, (y_peps - y_meps) / 2e-15, (z_peps - z_meps) / 2e-15, (w_peps - w_meps) / 2e-15);
                     (ddouble dxdt, ddouble dydt, ddouble dzdt, ddouble dwdt) = testcase.Diff(t);
 
