@@ -37,7 +37,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
                         (ddouble x, ddouble y, ddouble z) = volume.Value(u, v, w);
                         ddouble dsduvw = volume.Ds(u, v, w);
-                    
+
                         ddouble g = f(x, y, z) * dsduvw;
 
                         sk += ps[i].wk * ps[j].wk * ps[k].wk * g;

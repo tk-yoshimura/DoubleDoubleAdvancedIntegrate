@@ -7,8 +7,8 @@ namespace DoubleDoubleAdvancedIntegrate {
         public Func<ddouble, ddouble> Ds { get; }
 
         public Line3D(
-            Func<ddouble, (ddouble x, ddouble y, ddouble z)> value, 
-            Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> diff, 
+            Func<ddouble, (ddouble x, ddouble y, ddouble z)> value,
+            Func<ddouble, (ddouble dxdt, ddouble dydt, ddouble dzdt)> diff,
             Func<ddouble, ddouble>? ds = null) {
 
             Value = value;
@@ -28,8 +28,8 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         public Line3D(
             Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, Func<ddouble, ddouble> z,
-            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt, 
-            Func<ddouble, ddouble>? ds = null) 
+            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, Func<ddouble, ddouble> dzdt,
+            Func<ddouble, ddouble>? ds = null)
 
             : this(t => (x(t), y(t), z(t)), t => (dxdt(t), dydt(t), dzdt(t)), ds) { }
 
@@ -40,7 +40,7 @@ namespace DoubleDoubleAdvancedIntegrate {
             return new(
                 t => (v0.x + t * dx, v0.y + t * dy, v0.z + t * dz),
                 t => (dx, dy, dz),
-                t => ds 
+                t => ds
             );
         }
 

@@ -31,7 +31,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
                     (ddouble x, ddouble y) = surface.Value(u, v);
                     ddouble dsduv = surface.Ds(u, v);
-                    
+
                     ddouble g = f(x, y) * dsduv;
 
                     sk += ps[i].wk * ps[j].wk * g;

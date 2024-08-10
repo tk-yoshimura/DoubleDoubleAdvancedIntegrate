@@ -85,7 +85,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (dx01 - v * dx02 - (1u - v) * w * dx03, dy01 - v * dy02 - (1u - v) * w * dy03, dz01 - v * dz02 - (1u - v) * w * dz03),
                     ((1d - u) * (dx02 - w * dx03), (1d - u) * (dy02 - w * dy03), (1d - u) * (dz02 - w * dz03)),
                     ((1d - u) * (1d - v) * dx03, (1d - u) * (1d - v) * dy03, (1d - u) * (1d - v) * dz03)
-                ), 
+                ),
                 (u, v, w) => ds * ddouble.Abs(ddouble.Square(1d - u) * (1d - v))
             );
         }
@@ -116,7 +116,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (dx01, dy01, dz01),
                     (dx02, dy02, dz02),
                     (dx03, dy03, dz03)
-                ), 
+                ),
                 (u, v, w) => ds
             );
         }
@@ -141,7 +141,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (r * cos_theta * cos_phi, r * cos_theta * sin_phi, -r * sin_theta),
                     (-r * sin_theta * sin_phi, r * sin_theta * cos_phi, 0d)
                 );
-            }, 
+            },
             (r, theta, phi) => ddouble.Abs(r * r * ddouble.Sin(theta))
         );
 
@@ -167,7 +167,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (v * cos_theta * cos_phi, v * cos_theta * sin_phi, -v * sin_theta),
                     (-v * sin_theta * sin_phi, v * sin_theta * cos_phi, 0d)
                 );
-            }, 
+            },
             (r, theta, phi) => ddouble.Abs(ddouble.Square(InfSCurve.Value(r)) * InfSCurve.Diff(r) * ddouble.Sin(theta))
         );
 
@@ -189,7 +189,7 @@ namespace DoubleDoubleAdvancedIntegrate {
                     (-r * sin_theta, r * cos_theta, 0d),
                     (0d, 0d, 1d)
                 );
-            }, 
+            },
             (r, theta, phi) => ddouble.Abs(r)
         );
 

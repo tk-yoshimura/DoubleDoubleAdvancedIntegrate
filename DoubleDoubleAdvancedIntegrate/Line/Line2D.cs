@@ -7,8 +7,8 @@ namespace DoubleDoubleAdvancedIntegrate {
         public Func<ddouble, ddouble> Ds { get; }
 
         public Line2D(
-            Func<ddouble, (ddouble x, ddouble y)> value, 
-            Func<ddouble, (ddouble dxdt, ddouble dydt)> diff, 
+            Func<ddouble, (ddouble x, ddouble y)> value,
+            Func<ddouble, (ddouble dxdt, ddouble dydt)> diff,
             Func<ddouble, ddouble>? ds = null) {
 
             Value = value;
@@ -27,9 +27,9 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         public Line2D(
-            Func<ddouble, ddouble> x, Func<ddouble, ddouble> y, 
-            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt, 
-            Func<ddouble, ddouble>? ds = null) 
+            Func<ddouble, ddouble> x, Func<ddouble, ddouble> y,
+            Func<ddouble, ddouble> dxdt, Func<ddouble, ddouble> dydt,
+            Func<ddouble, ddouble>? ds = null)
 
             : this(t => (x(t), y(t)), t => (dxdt(t), dydt(t)), ds) { }
 

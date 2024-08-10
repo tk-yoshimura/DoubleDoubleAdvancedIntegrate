@@ -8,7 +8,7 @@ namespace DoubleDoubleAdvancedIntegrate {
 
         public Surface3D(
             Func<ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> value,
-            Func<ddouble, ddouble, ((ddouble dx, ddouble dy, ddouble dz) du, (ddouble dx, ddouble dy, ddouble dz) dv)> diff, 
+            Func<ddouble, ddouble, ((ddouble dx, ddouble dy, ddouble dz) du, (ddouble dx, ddouble dy, ddouble dz) dv)> diff,
             Func<ddouble, ddouble, ddouble>? ds = null) {
 
             Value = value;
