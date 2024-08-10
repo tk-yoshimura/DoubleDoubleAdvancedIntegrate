@@ -44,7 +44,7 @@
 ```
 
 ```csharp
-// Line integral on the helix circle with integrand f(x, y, z) = z^2
+// Line integral on the helix with integrand f(x, y, z) = z^2
 (ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
     (x, y, z) => z * z,
     Line3D.Helix,
