@@ -26,6 +26,15 @@
 ```
 
 ```csharp
+// Line integral on the (t, t^2) with integrand f(x, y) = x + 2 y
+(ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
+    (x, y) => x + 2 * y,
+    new Line2D(t => (t, t * t), t => (1, 2 * t)),
+    (0, 1), eps: 0, maxdepth: 16
+);
+```
+
+```csharp
 // Line integral on the unit circle with integrand f(x, y) = x^2 + y^2
 (ddouble value, ddouble error, long eval_points) = LineIntegral.AdaptiveIntegrate(
     (x, y) => x * x + y * y,
