@@ -2,8 +2,8 @@
 
 namespace DoubleDoubleAdvancedIntegrate {
     public class Volume3D {
-        public Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> Value { get; }
-        public Func<ddouble, ddouble, ddouble,
+        public virtual Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> Value { get; }
+        public virtual Func<ddouble, ddouble, ddouble,
             ((ddouble dx, ddouble dy, ddouble dz) du, (ddouble dx, ddouble dy, ddouble dz) dv, (ddouble dx, ddouble dy, ddouble dz) dw)> Diff { get; }
         public Func<ddouble, ddouble, ddouble, ddouble> Ds { get; }
 
