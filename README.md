@@ -127,6 +127,16 @@
 );
 ```
 
+### Complex Integral
+note: If the integral path contains poles, the accuracy of the calculation results cannot be guaranteed.
+```csharp
+(Complex value, ddouble error, long eval_points) = ComplexIntegral.AdaptiveIntegrate(
+    z => 1 / z,
+    Line2D.Circle,
+    Interval.OmniAzimuth, 1e-28, maxdepth: 16
+);
+```
+
 ## Licence
 [MIT](https://github.com/tk-yoshimura/DoubleDoubleAdvancedIntegrate/blob/main/LICENSE)
 
