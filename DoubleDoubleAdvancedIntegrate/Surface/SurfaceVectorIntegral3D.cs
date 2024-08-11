@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace DoubleDoubleAdvancedIntegrate {
     public static partial class SurfaceVectorIntegral {
         public static (ddouble value, ddouble error) Integrate(
-            Func<ddouble, ddouble, ddouble, (ddouble, ddouble, ddouble)> f,
+            Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> f,
             Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             GaussKronrodOrder order = GaussKronrodOrder.G31K63) {
@@ -62,7 +62,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         private static (ddouble value, ddouble error, long eval_points) UnlimitedIntegrate(
-            Func<ddouble, ddouble, ddouble, (ddouble, ddouble, ddouble)> f,
+            Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> f,
             Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             ddouble eps, GaussKronrodOrder order) {
@@ -102,7 +102,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         private static (ddouble value, ddouble error, long eval_points) LimitedDepthIntegrate(
-            Func<ddouble, ddouble, ddouble, (ddouble, ddouble, ddouble)> f,
+            Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> f,
             Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             ddouble eps, GaussKronrodOrder order, int maxdepth) {
@@ -145,7 +145,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         private static (ddouble value, ddouble error, long eval_points) LimitedEvalIntegrate(
-            Func<ddouble, ddouble, ddouble, (ddouble, ddouble, ddouble)> f,
+            Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> f,
             Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             ddouble eps, GaussKronrodOrder order, long discontinue_eval_points) {
@@ -188,7 +188,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         private static (ddouble value, ddouble error, long eval_points) LimitedDepthAndEvalIntegrate(
-            Func<ddouble, ddouble, ddouble, (ddouble, ddouble, ddouble)> f,
+            Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> f,
             Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             ddouble eps, GaussKronrodOrder order, int maxdepth, long discontinue_eval_points) {
@@ -233,7 +233,7 @@ namespace DoubleDoubleAdvancedIntegrate {
         }
 
         public static (ddouble value, ddouble error, long eval_points) AdaptiveIntegrate(
-            Func<ddouble, ddouble, ddouble, (ddouble, ddouble, ddouble)> f,
+            Func<ddouble, ddouble, ddouble, (ddouble x, ddouble y, ddouble z)> f,
             Surface3D surface,
             (ddouble min, ddouble max) u_range, (ddouble min, ddouble max) v_range,
             ddouble eps,
