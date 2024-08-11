@@ -137,6 +137,23 @@ note: If the integral path contains poles, the accuracy of the calculation resul
 );
 ```
 
+### Vector Integral
+```csharp
+(ddouble value, ddouble error, long eval_points) = LineVectorIntegral.AdaptiveIntegrate(
+    (x, y, z) => (x * x * y * z, 3 * x * y, y * y),
+    Line3D.Helix,
+    (0, ddouble.PI / 2), eps: 0, maxdepth: 16
+);
+```
+
+```csharp
+(ddouble value, ddouble error, long eval_points) = SurfaceVectorIntegral.AdaptiveIntegrate(
+    (x, y, z) => (-x, -y, -z),
+    Surface3D.Cylinder,
+    (0, ddouble.PI / 2), (0d, 1d), eps: 0, maxdepth: 16
+);
+```
+
 ## Licence
 [MIT](https://github.com/tk-yoshimura/DoubleDoubleAdvancedIntegrate/blob/main/LICENSE)
 
