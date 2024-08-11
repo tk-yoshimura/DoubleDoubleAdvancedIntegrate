@@ -133,7 +133,7 @@ note: If the integral path contains poles, the accuracy of the calculation resul
 (Complex value, ddouble error, long eval_points) = ComplexIntegral.AdaptiveIntegrate(
     z => 1 / z,
     Line2D.Circle,
-    Interval.OmniAzimuth, 1e-28, maxdepth: 16
+    Interval.OmniAzimuth, eps: 0, maxdepth: 16
 );
 ```
 
