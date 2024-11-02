@@ -16,7 +16,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi) < 1e-28);
         }
     }
 }

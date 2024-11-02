@@ -26,7 +26,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue((value - (0d, 2 * ddouble.PI)).Norm < 1e-28);
+            Assert.IsTrue((value - (0d, 2 * ddouble.Pi)).Norm < 1e-28);
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (Complex value, ddouble error, _) = ComplexIntegral.AdaptiveIntegrate(
                 z => Complex.Cos(z),
                 Line2D.Circle,
-                (0, ddouble.PI / 2), 1e-28, maxdepth: 16
+                (0, ddouble.Pi / 2), 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);
@@ -58,7 +58,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (Complex value, ddouble error, _) = ComplexIntegral.AdaptiveIntegrate(
                 z => 1 / (z * z + 1),
                 Line2D.Circle,
-                (-ddouble.PI / 4, ddouble.PI / 4), 1e-28, maxdepth: 16
+                (-ddouble.Pi / 4, ddouble.Pi / 4), 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);

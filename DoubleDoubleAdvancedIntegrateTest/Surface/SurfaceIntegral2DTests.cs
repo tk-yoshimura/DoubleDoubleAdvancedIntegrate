@@ -51,13 +51,13 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => 1,
                 Surface2D.Circle,
-                (0, 1), (0, ddouble.PI * 2)
+                (0, 1), (0, ddouble.Pi * 2)
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - ddouble.PI) < 1e-14);
+            Assert.IsTrue(ddouble.Abs(value - ddouble.Pi) < 1e-14);
         }
 
         [TestMethod()]
@@ -65,7 +65,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => y,
                 Surface2D.Circle,
-                (0, 1), (0, ddouble.PI / 2)
+                (0, 1), (0, ddouble.Pi / 2)
             );
 
             Console.WriteLine(value);
@@ -79,13 +79,13 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error) = SurfaceIntegral.Integrate(
                 (x, y) => x * x + y * y,
                 Surface2D.Circle,
-                (1, 2), (0, ddouble.PI * 2)
+                (1, 2), (0, ddouble.Pi * 2)
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 15 * ddouble.PI / 2) < 1e-14);
+            Assert.IsTrue(ddouble.Abs(value - 15 * ddouble.Pi / 2) < 1e-14);
         }
 
         [TestMethod()]
@@ -129,7 +129,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - ddouble.PI) < 1e-4);
+            Assert.IsTrue(ddouble.Abs(value - ddouble.Pi) < 1e-4);
         }
 
         [TestMethod()]

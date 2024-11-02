@@ -49,7 +49,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - 2 * ddouble.PI) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - 2 * ddouble.Pi) < 1e-28);
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value + 2 * ddouble.PI) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value + 2 * ddouble.Pi) < 1e-28);
         }
 
         [TestMethod]
@@ -69,11 +69,11 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = LineVectorIntegral.AdaptiveIntegrate(
                 (x, y) => (-y, x),
                 Line2D.Circle,
-                (2 * ddouble.PI, 0), eps: 0, maxdepth: 16
+                (2 * ddouble.Pi, 0), eps: 0, maxdepth: 16
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value + 2 * ddouble.PI) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value + 2 * ddouble.Pi) < 1e-28);
         }
     }
 }

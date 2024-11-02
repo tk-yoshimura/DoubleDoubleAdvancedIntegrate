@@ -25,7 +25,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - ddouble.PI * 2) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - ddouble.Pi * 2) < 1e-28);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - 8 * ddouble.Cube(ddouble.PI) * ddouble.Sqrt2 / 3) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - 8 * ddouble.Cube(ddouble.Pi) * ddouble.Sqrt2 / 3) < 1e-28);
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi) < 1e-28);
         }
     }
 }

@@ -37,13 +37,13 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error) = VolumeIntegral.Integrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere,
-                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2)
+                (0, 1), (0, ddouble.Pi), (0, ddouble.Pi * 2)
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3) < 1e-2);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi / 3) < 1e-2);
         }
 
         [TestMethod()]
@@ -51,14 +51,14 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere,
-                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
+                (0, 1), (0, ddouble.Pi), (0, ddouble.Pi * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3) < 1e-25);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi / 3) < 1e-25);
         }
 
         [TestMethod()]
@@ -66,14 +66,14 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere + (1, 2, 3),
-                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
+                (0, 1), (0, ddouble.Pi), (0, ddouble.Pi * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3) < 1e-25);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi / 3) < 1e-25);
         }
 
         [TestMethod()]
@@ -81,14 +81,14 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Sphere * (2, 3, 5),
-                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
+                (0, 1), (0, ddouble.Pi), (0, ddouble.Pi * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3 * 30) < 1e-25);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi / 3 * 30) < 1e-25);
         }
 
         [TestMethod()]
@@ -96,14 +96,14 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error, _) = VolumeIntegral.AdaptiveIntegrate(
                 (x, y, z) => 1,
                 Volume3D.Rotate(Volume3D.Sphere, (1, 2, 3), 0.5),
-                (0, 1), (0, ddouble.PI), (0, ddouble.PI * 2),
+                (0, 1), (0, ddouble.Pi), (0, ddouble.Pi * 2),
                 eps: 0, maxdepth: 2, order: DoubleDoubleIntegrate.GaussKronrodOrder.G15K31
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.PI / 3) < 1e-25);
+            Assert.IsTrue(ddouble.Abs(value - 4 * ddouble.Pi / 3) < 1e-25);
         }
 
         [TestMethod()]
@@ -118,7 +118,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - ddouble.Cube(ddouble.Sqrt(ddouble.PI))) < 1e-16);
+            Assert.IsTrue(ddouble.Abs(value - ddouble.Cube(ddouble.Sqrt(ddouble.Pi))) < 1e-16);
         }
 
         [TestMethod()]
@@ -147,7 +147,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 2 * ddouble.PI) < 1e-3);
+            Assert.IsTrue(ddouble.Abs(value - 2 * ddouble.Pi) < 1e-3);
         }
 
         [TestMethod()]

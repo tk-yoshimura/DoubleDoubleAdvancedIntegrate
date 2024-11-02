@@ -13,7 +13,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - ddouble.PI * 2) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - ddouble.Pi * 2) < 1e-28);
         }
 
         [TestMethod]

@@ -15,7 +15,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - -4 * ddouble.PI / 3) < 1e-3);
+            Assert.IsTrue(ddouble.Abs(value - -4 * ddouble.Pi / 3) < 1e-3);
         }
 
         [TestMethod()]
@@ -23,13 +23,13 @@ namespace DoubleDoubleAdvancedIntegrateTest {
             (ddouble value, ddouble error) = SurfaceVectorIntegral.Integrate(
                 (x, y, z) => (-x, -y, -z),
                 Surface3D.Cylinder,
-                (0, ddouble.PI / 2), (0d, 1d)
+                (0, ddouble.Pi / 2), (0d, 1d)
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - -ddouble.PI / 2) < 1e-3);
+            Assert.IsTrue(ddouble.Abs(value - -ddouble.Pi / 2) < 1e-3);
         }
 
         [TestMethod()]

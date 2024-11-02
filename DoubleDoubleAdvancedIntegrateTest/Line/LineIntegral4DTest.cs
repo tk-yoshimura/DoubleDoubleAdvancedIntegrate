@@ -24,11 +24,11 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                     t => (ddouble.Cos(t), ddouble.Sin(t), ddouble.Cos(t), ddouble.Sin(t)),
                     t => (-ddouble.Sin(t), ddouble.Cos(t), -ddouble.Sin(t), ddouble.Cos(t))
                 ),
-                (0, ddouble.PI / 2), 1e-28, maxdepth: 16
+                (0, ddouble.Pi / 2), 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);
-            Assert.IsTrue(ddouble.Abs(value - ddouble.Sqrt2 * ddouble.PI) < 1e-28);
+            Assert.IsTrue(ddouble.Abs(value - ddouble.Sqrt2 * ddouble.Pi) < 1e-28);
         }
 
         [TestMethod()]
@@ -39,7 +39,7 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                     t => (ddouble.Cos(t), ddouble.Sin(t), ddouble.Cos(2 * t), t),
                     t => (-ddouble.Sin(t), ddouble.Cos(t), -2 * ddouble.Sin(2 * t), 1d)
                 ),
-                (0, ddouble.PI * 2), 1e-28, maxdepth: 16
+                (0, ddouble.Pi * 2), 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);
@@ -57,13 +57,13 @@ namespace DoubleDoubleAdvancedIntegrateTest {
                     t => (-ddouble.Sin(t), ddouble.Cos(t), 1d, 1d),
                     t => ddouble.Sqrt(3)
                 ),
-                (0, ddouble.PI * 2), 1e-28, maxdepth: 16
+                (0, ddouble.Pi * 2), 1e-28, maxdepth: 16
             );
 
             Console.WriteLine(value);
             Console.WriteLine($"{error:e4}");
 
-            Assert.IsTrue(ddouble.Abs(value - 2 * ddouble.Sqrt(3) * ddouble.PI) < 1e-10);
+            Assert.IsTrue(ddouble.Abs(value - 2 * ddouble.Sqrt(3) * ddouble.Pi) < 1e-10);
         }
     }
 }
