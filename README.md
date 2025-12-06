@@ -2,7 +2,7 @@
  Double-Double Advanced Numerical Integration Implements 
 
 ## Requirement
-.NET 8.0  
+.NET 10.0  
 [DoubleDouble](https://github.com/tk-yoshimura/DoubleDouble)  
 [DoubleDoubleComplex](https://github.com/tk-yoshimura/DoubleDoubleComplex)  
 [DoubleDoubleIntegrate](https://github.com/tk-yoshimura/DoubleDoubleIntegrate)  
